@@ -30,6 +30,7 @@
 * [👉行銷實用工具](#行銷實用工具)
   * [Linebot-Basic](#Linebot-Basic) 
   * [telegrambot](#telegrambot) 
+  * [IG自動按愛心](#IG自動按愛心) 
   
 ## 👉商業數據類
 
@@ -100,4 +101,7 @@
 文章：[打造聊天機器人，商管人也看得懂的最詳細步驟【2020年最新更新版本】](https://medium.com/%E8%AA%A4%E9%97%96%E6%95%B8%E6%93%9A%E5%8F%A2%E6%9E%97%E7%9A%84%E5%95%86%E7%AE%A1%E4%BA%BAzino/%E6%89%93%E9%80%A0%E8%81%8A%E5%A4%A9%E6%A9%9F%E5%99%A8%E4%BA%BA-%E5%95%86%E7%AE%A1%E4%BA%BA%E4%B9%9F%E7%9C%8B%E5%BE%97%E6%87%82%E7%9A%84%E6%9C%80%E8%A9%B3%E7%B4%B0%E6%AD%A5%E9%A9%9F-2020%E5%B9%B4%E6%9C%80%E6%96%B0%E6%9B%B4%E6%96%B0%E7%89%88%E6%9C%AC-d8e8c673e77c)
 
 #### telegramBot
-文章：[Telegram聊天機器人超詳細懶人包，商管人都看得懂【附Python程式碼】]()
+文章：[Telegram聊天機器人超詳細懶人包，商管人都看得懂【附Python程式碼】](https://medium.com/@ivanyang0606/telegram%E8%81%8A%E5%A4%A9%E6%A9%9F%E5%99%A8%E4%BA%BA%E8%B6%85%E8%A9%B3%E7%B4%B0%E6%87%B6%E4%BA%BA%E5%8C%85-%E5%95%86%E7%AE%A1%E4%BA%BA%E9%83%BD%E7%9C%8B%E5%BE%97%E6%87%82-%E9%99%84python%E7%A8%8B%E5%BC%8F%E7%A2%BC-1ec81a91ce48)
+
+#### IG自動按愛心
+文章：[小編神器，IG愛心大放送，selenium在IG上的實做]()
