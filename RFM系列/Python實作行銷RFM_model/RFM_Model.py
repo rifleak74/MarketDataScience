@@ -23,7 +23,7 @@ g = sns.FacetGrid(purchase_list, # 來源資料表
 #小圖表部分
 g = g.map_dataframe(sns.barplot, # 資料顯示的模式
                     x= 'gender', # 小圖表X資料來源
-                    y ='購買量', # 小圖表Y資料來源
+                    y ='水', # 小圖表Y資料來源
                     palette = sns.color_palette("muted")) #畫布色調
 
 g = g.set_axis_labels('光顧天數','購買頻率').add_legend()
