@@ -108,4 +108,4 @@
 文章：[小編神器，IG愛心大放送，selenium在IG上的實做](https://medium.com/@ivanyang0606/%E5%B0%8F%E7%B7%A8%E7%A5%9E%E5%99%A8-ig%E6%84%9B%E5%BF%83%E5%A4%A7%E6%94%BE%E9%80%81-selenium%E5%9C%A8ig%E4%B8%8A%E7%9A%84%E5%AF%A6%E5%81%9A-c891d95526bd)
 
 #### FB自動分享文章
-文章：[小編神器，從此不用發文發到死，selenium在FB上的實做]()
+文章：[小編神器，從此不用發文發到死，selenium在FB上的實做](https://medium.com/@ivanyang0606/%E5%B0%8F%E7%B7%A8%E7%A5%9E%E5%99%A8-%E5%BE%9E%E6%AD%A4%E4%B8%8D%E7%94%A8%E7%99%BC%E6%96%87%E7%99%BC%E5%88%B0%E6%AD%BB-selenium%E5%9C%A8fb%E4%B8%8A%E7%9A%84%E5%AF%A6%E5%81%9A-1349e27a6d15)
