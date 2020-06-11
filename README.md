@@ -15,6 +15,7 @@
   * [購物籃分析](#購物籃分析)
   * [購買力分析](#購買力分析)
   * [R_口碑定位雷達圖](#R_口碑定位雷達圖)
+  * [意見領袖(KOL)分析](#意見領袖(KOL)分析)
 * [👉RFM系列](#RFM系列)
   * [Python實作行銷RFM_model](#Python實作行銷RFM_model)
   * [行銷預算交給RFM](#行銷預算交給RFM)
@@ -60,6 +61,9 @@
 
 #### R_口碑定位雷達圖
 文章：[我的競爭優勢？ 視覺化口碑定位雷達圖輕鬆搜出來！（附實現程式碼）](https://medium.com/marketingdatascience/%E6%88%91%E7%9A%84%E7%AB%B6%E7%88%AD%E5%84%AA%E5%8B%A2-%E8%A6%96%E8%A6%BA%E5%8C%96%E5%8F%A3%E7%A2%91%E5%AE%9A%E4%BD%8D%E9%9B%B7%E9%81%94%E5%9C%96%E8%BC%95%E9%AC%86%E6%90%9C%E5%87%BA%E4%BE%86-%E9%99%84%E5%AF%A6%E7%8F%BE%E7%A8%8B%E5%BC%8F%E7%A2%BC-92774cd36d6)
+
+#### 意見領袖(KOL)分析
+文章：[]()
 
 ## 👉RFM系列
 #### Python實作行銷RFM_model
