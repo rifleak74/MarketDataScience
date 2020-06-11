@@ -86,4 +86,4 @@ plt.title("意見領袖分析",fontsize=30)#標題
 plt.ylabel('訂閱數量',fontsize=20)#y的標題
 plt.xlabel('平均觀看次數',fontsize=20) #x的標題
 plt.tight_layout()
-# plt.savefig('意見領袖分析', dpi=300)
+# plt.savefig('意見領袖分析.png', dpi=300)
