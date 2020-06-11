@@ -59,17 +59,26 @@ container.to_csv('台灣youtuber排名.csv', encoding='utf-8-sig', index=False)
 
 #進行資料分析
 plt.figure(figsize=(20,10))
+colorlist = []
+for tx,ty,ab in zip(container['訂閱數量'],container['平均觀看次數'], container['Youtuber名稱']):
+    Aavg = container['訂閱數量'].mean()
+    Bavg = container['平均觀看次數'].mean()
+    
+    if (tx < Aavg) & (ty < Bavg):#第三象限
+        colorlist.append('#abc4d8')
+    elif (tx > Aavg) & (ty < Bavg):
+        colorlist.append('#abd8bf')
+    elif (tx < Aavg) & (ty > Bavg):
+        colorlist.append('#d8bfab')
+    else:
+        plt.text(tx,ty,ab, fontsize=15)# 加上文字註解
+        colorlist.append('#d8abc4')
 # 繪製圓點
 plt.scatter(container['訂閱數量'],container['平均觀看次數'],
-            color='#66a7b8',
+            color= colorlist,
             s=container['Nox評級']**3*50,
             alpha=0.5)
-# 加上文字註解
-for tx,ty,ab in zip(container['訂閱數量'],container['平均觀看次數'], container['Youtuber名稱']):
-    #所有youtuber都出來太雜亂了，因此要有一定量者才顯示
-    if (tx > container['訂閱數量'].mean()) and (ty > container['平均觀看次數'].mean()):
-        plt.text(tx,ty,ab, fontsize=15 )
-    
+
 plt.axvline(container['訂閱數量'].mean(), color='c', linestyle='dashed', linewidth=1) # 繪製平均線    
 plt.axhline(container['平均觀看次數'].mean(), color='c', linestyle='dashed', linewidth=1) # 繪製平均線 
 
