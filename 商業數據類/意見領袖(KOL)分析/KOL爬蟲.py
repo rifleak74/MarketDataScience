@@ -73,8 +73,8 @@ for tx,ty,ab in zip(container['訂閱數量'],container['平均觀看次數'], c
 plt.axvline(container['訂閱數量'].mean(), color='c', linestyle='dashed', linewidth=1) # 繪製平均線    
 plt.axhline(container['平均觀看次數'].mean(), color='c', linestyle='dashed', linewidth=1) # 繪製平均線 
 
-plt.title("GPS定位圖 ",fontsize=30)#標題
+plt.title("意見領袖分析",fontsize=30)#標題
 plt.ylabel('訂閱數量',fontsize=20)#y的標題
 plt.xlabel('平均觀看次數',fontsize=20) #x的標題
 plt.tight_layout()
-# plt.savefig('GPS定位圖', dpi=300)
+# plt.savefig('意見領袖分析', dpi=300)
