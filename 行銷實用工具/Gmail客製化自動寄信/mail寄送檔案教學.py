@@ -13,8 +13,8 @@ from email.mime.application import MIMEApplication
 
 content = MIMEMultipart()  #建立MIMEMultipart物件
 content["subject"] = "測試寄信"  #郵件標題
-content["from"] = "ivanyang0606@gmail.com"  #寄件者
-content["to"] = "aaaaaa111111aaaaaa1111ox@gmail.com" #收件者
+content["from"] = "寄件者的信箱"  #寄件者
+content["to"] = "收件者的信箱" #收件者
 content.attach(MIMEText("Ivan的測試寄信，寄信處女作品～～"))  #郵件內容
 content.attach(MIMEImage(Path("夕陽.jpg").read_bytes()))  # 郵件圖片內容
 
@@ -46,7 +46,7 @@ with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺�
     try:
         smtp.ehlo()  # 驗證SMTP伺服器
         smtp.starttls()  # 建立加密傳輸
-        smtp.login("ivanyang0606@gmail.com", "cvztwtflzkntbuql")  # 登入寄件者gmail
+        smtp.login("寄件者的信箱", "寄件者的寄件密碼")  # 登入寄件者gmail
         smtp.send_message(content)  # 寄送郵件
         print("成功傳送")
     except Exception as e:
