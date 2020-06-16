@@ -13,8 +13,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication 
 custemor = pd.read_csv('顧客訂單.csv')
 
-sendFrom = "ivanyang0606@gmail.com"  #寄件者
-senderPassword = "cvztwtflzkntbuql"
+sendFrom = "寄件者信箱"  #寄件者
+senderPassword = "寄件者密碼"
 
 #寄送檔案專用
 def sendFile(fileName, content):
