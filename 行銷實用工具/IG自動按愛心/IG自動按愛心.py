@@ -45,8 +45,8 @@ driver.find_element_by_xpath('//*[@name="username"]').send_keys(IGID) #輸入登
 time.sleep(1)
 driver.find_element_by_xpath('//*[@name="password"]').send_keys(IGpassword) # 輸入登入密碼
 time.sleep(3)
-
-
+# 登入
+driver.find_element_by_xpath('//*[@type="submit"]').click()
 
 ####### 開始操作 到不同的tag去發文 ####### 
 for tag in tags:
