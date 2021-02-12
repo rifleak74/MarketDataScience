@@ -49,21 +49,22 @@ time.sleep(3)
 driver.find_element_by_xpath('//*[@type="submit"]').click()
 
 ####### 開始操作 到不同的tag去發文 ####### 
+
 for tag in tags:
     driver.get("https://www.instagram.com/explore/tags/" + tag) #切換到該tag
     time.sleep(random.randint(2,5))
     driver.find_elements_by_class_name('_9AhH0')[9].click() #點選圖片(選擇最新發的)
-    for i in range(random.randint(40,50)):
+    for i in range(random.randint(20,25)):
         if i % 10 == 1:
             time.sleep(random.randint(5,20))
         
         # 檢查有沒有按過讚
-        if len(driver.find_elements_by_xpath('//*[@aria-label="Unlike"]')) != 0 or len(driver.find_elements_by_xpath('//*[@aria-label="收回讚"]')) != 0:
+        if len(driver.find_elements_by_xpath('//span/*[@aria-label="收回讚"]')) != 0 or len(driver.find_elements_by_xpath('//*[@aria-label="收回讚"]')) != 0:
             print('按過了')
         else:
             time.sleep(random.randint(1,3))
             try:
-                driver.find_element_by_xpath('//*[@aria-label="讚"]').click()
+                driver.find_element_by_xpath('//span/*[@aria-label="讚"]').click()
             except:
                 print('圖片沒跑出來，直接下一頁')
         driver.find_elements_by_class_name('coreSpriteRightPaginationArrow')[0].click()
