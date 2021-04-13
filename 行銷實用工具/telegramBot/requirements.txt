@@ -6,7 +6,7 @@ future==0.16.0
 gunicorn==19.8.1
 idna==2.6
 itsdangerous==0.24
-jinja2==2.10
+jinja2==2.11.3
 markupsafe==1.0
 python-telegram-bot==10.1.0
 requests==2.18.4
