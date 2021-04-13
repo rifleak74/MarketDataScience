@@ -12,3 +12,4 @@ python-telegram-bot==10.1.0
 requests==2.18.4
 urllib3==1.22
 werkzeug==0.14.1
+setuptools==45.2.0
