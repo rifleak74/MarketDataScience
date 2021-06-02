@@ -10,6 +10,6 @@ jinja2>=2.11.3
 markupsafe==1.0
 python-telegram-bot==10.1.0
 requests==2.20.0
-urllib3==1.24.2
+urllib3==1.26.5
 werkzeug==0.15.3
 setuptools==45.2.0
