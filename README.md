@@ -1,5 +1,7 @@
 # 行銷搬進大程式 完整程式碼
 
+![image](https://i.imgur.com/SVhJU6w.png)
+
 彙整所有行銷搬進大程式實做文章的程式碼，建議可以搭配Medium同步實做，更能達到學習效果。除了商業類型的數據分析外，也有程式金融的數據分析喔！
 
 [行銷搬進大程式　官方網站](https://marketingliveincode.com/)
