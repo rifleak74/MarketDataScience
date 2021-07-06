@@ -1,0 +1,52 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,img,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+
+}
+
+@font-face {
+    font-family: Gentium;
+    src: url(fonts/msj.ttf);
+  }
+
+body {
+    font-size: 16px;
+    text-align: center;
+    font-family: Microsoft JhengHei,Arial,'新細明體', sans-serif;
+    position: relative;
+}
+
+.header_style{
+    height: 300px; 
+    background-color: #5d82bb; 
+    text-align: center;
+}
+
+.header_style p{
+    color: #ffffff; 
+    margin: 20px;
+}
+
+.container_style{
+    background-color: #212121; 
+    height: 500px; 
+
+}
+
+.footer_style{
+    background-color: #0177C1; 
+    text-align: left;
+    padding: 60px;
+}
