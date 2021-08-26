@@ -52,8 +52,8 @@ plt.plot(names,
     rain['是否下雨'],
     color='#000000'
     )
-plt.title('圖片大標題', fontsize = 30) #加入標題
-plt.xlabel('X資料名稱') #加x軸標籤
-plt.ylabel('Y資料名稱') #加y軸標籤
+plt.title('天氣狀況－台北地區', fontsize = 30) #加入標題
+plt.xlabel('時間') #加x軸標籤
+plt.ylabel('溫度') #加y軸標籤
 plt.xticks(rotation=30)
 plt.show()
