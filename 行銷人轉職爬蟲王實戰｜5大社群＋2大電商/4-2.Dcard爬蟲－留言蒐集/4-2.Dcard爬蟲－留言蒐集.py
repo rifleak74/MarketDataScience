@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue May  4 22:18:53 2021
-
 @author: Ivan
 課程教材：行銷人轉職爬蟲王實戰｜5大社群平台＋2大電商
 版權屬於「楊超霆」所有，若有疑問，可聯絡ivanyang0606@gmail.com
-
 第四章 Dcard爆點分析
 Dcard爬蟲－留言蒐集
+
+更新紀錄
+2022/4/23：由於多位學生發現請求API過於頻繁，導致請求出現429，因此加入亂數並拉長請求時間
 """
 import time
 import requests
 import json
 import pandas as pd
+import random
 
 dcard_article = pd.read_csv('Dcard文章資料.csv')
 # https://www.dcard.tw/service/api/v2/posts/235996273/comments?after=60
@@ -37,7 +39,7 @@ for articleID in dcard_article['文章ID']:
         
         last_comment = str(len(alldata)) # 取出最後一篇文章
         print(i)
-        time.sleep(5)
+        time.sleep(random.randint(5,15))
         i=i+1
 
 alldata = pd.DataFrame(alldata)
