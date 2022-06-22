@@ -133,7 +133,7 @@ for i in range(int(page)):
     for item, thename in zip(driver.find_elements_by_xpath('//*[@data-sqe="link"]'), driver.find_elements_by_xpath('//*[@data-sqe="name"]')):
         #商品ID、商家ID
         getID = item.get_attribute('href')
-        theitemid = int((getID[getID.rfind('.')+1:]))
+        theitemid = int((getID[getID.rfind('.')+1:getID.rfind('?')]))
         theshopid = int(getID[ getID[:getID.rfind('.')].rfind('.')+1 :getID.rfind('.')]) 
         itemid.append(theitemid)
         shopid.append(theshopid)
