@@ -28,15 +28,7 @@ dcard_article['標題'] = dcard_article['標題'].fillna('')
 dcard_article['內文簡介'] = dcard_article['內文簡介'].fillna('')
 dcard_article['主題標籤'] = dcard_article['主題標籤'].fillna('')
 dcard_comment['留言內容'] = dcard_comment['留言內容'].fillna('')
-#無異議字元
-replaceList = [
-    '這樣','因為','還是','覺得','我們','真的','一個','閒聊','什麼','問題','不會'
-    'span','https','com','imgur','class','jpg','f6','href','rel',
-    'nofollow','..','target','blank','hl','www','cc','tw','XD','f3',
-    'f2','reurl','Re','http','amp','content','type','user','ipdatetime',
-    '[',']','{','}','(',')',"'",':',',','/','\n','，','"','→','.','=','>',
-    '>','<','？','。','_','！','、','?','：','-','（','~','～','）','「',
-    '!','」','…','^',';','─','QQ','&','—',':',',','/','★','｜','+']
+
 # 時間轉換
 dcard_article['發文時間'] = pd.to_datetime(dcard_article['發文時間'])
 dcard_comment['發文時間'] = pd.to_datetime(dcard_comment['發文時間'])
