@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat May 22 17:47:01 2021
+Created on Sat May 29 17:47:01 2022
 
 @author: Ivan
 課程教材：行銷人轉職爬蟲王實戰｜5大社群平台＋2大電商
@@ -56,24 +56,24 @@ channels = []
 videolink = []
 # 開始一個一個爬蟲
 for yChannel in youtuber:
-    
+
     #--- 簡介 部分
     driver.get('https://www.youtube.com/' + str(yChannel) + '/about')
     time.sleep(10)
-    
+
     # 基本資料
     name.append(driver.find_element_by_id('text-container').text) # 存youtuber頻道名
     pageurl.append('https://www.youtube.com/' + str(yChannel)) # 存頻道網址
-    
+
     # 訂閱數輛
     getSubscription = driver.find_element_by_id('subscriber-count').text
     getSubscription = getSubscription.replace(' 位訂閱者','')
     subscription.append(getSubscription)
-    
+
     # 開始經營時間
     gettime = driver.find_element_by_xpath('//div[@id="right-column"]/yt-formatted-string[2]/span[2]').text
     intotime.append(datetime.strptime(gettime, "%Y年%m月%d日"))
-    
+
     # 總觀看次數
     getlooking = driver.find_element_by_xpath('//div[@id="right-column"]/yt-formatted-string[3]').text
     getlooking = getlooking.replace('getlooking = ','')
@@ -81,42 +81,49 @@ for yChannel in youtuber:
     getlooking = getlooking.replace('次','')
     getlooking = getlooking.replace(',','')
     looking.append(int(getlooking))
-    
+
     description.append(driver.find_element_by_id('description').text) # 存文案
-    
+
     location.append(driver.find_element_by_xpath('//div[@id="details-container"]/table/tbody/tr[2]/td[2]').text) # 存國家位置
-    
+
     # 其他連結
     getOtherlink = driver.find_elements_by_xpath('//div[@id="link-list-container"]/a')
     containar = {} # 結果整理成dict
     for link in getOtherlink:
         containar[link.text] = link.get_attribute('href')
     otherlink.append(containar)
-    
+
     #--- 頻道 部分
     driver.get('https://www.youtube.com/' + str(yChannel) + '/channels')
     time.sleep(10)
-    
+
     getlink = driver.find_elements_by_id('channel-info')
     containar = {} # 結果整理成dict
     for link in getlink:
         data = link.text
         data = data.split('\n')
-        containar[data[0]] = {
-            '訂閱數量':data[1].replace(' 位訂閱者',''),
-            '連結':link.get_attribute('href')
-            }
+        # 檢查有沒有訂閱者
+        if len(data) == 1:
+            containar[data[0]] = {
+                '訂閱數量':0,
+                '連結':link.get_attribute('href')
+                }
+        else:
+            containar[data[0]] = {
+                '訂閱數量':data[1].replace(' 位訂閱者',''),
+                '連結':link.get_attribute('href')
+                }
     channels.append(containar)
-    
+
     #--- 影片 部分
     driver.get('https://www.youtube.com/' + str(yChannel) + '/videos')
     time.sleep(10)
-    
+
     # 滾動頁面
     for scroll in range(20):
         driver.execute_script('window.scrollBy(0,1000)')
         time.sleep(2)
-    
+
     containar = [] # 結果整理成list
     for link in driver.find_elements_by_id('video-title'):
         containar.append(link.get_attribute('href'))
@@ -134,7 +141,6 @@ dic = {
         '頻道' : channels,
         '所有影片連結' : videolink
        }
-pd.DataFrame(dic).to_csv('Youtuber_頻道資料.csv', 
-                         encoding = 'utf-8-sig', 
+pd.DataFrame(dic).to_csv('Youtuber_頻道資料.csv',
+                         encoding = 'utf-8-sig',
                          index=False)
-
