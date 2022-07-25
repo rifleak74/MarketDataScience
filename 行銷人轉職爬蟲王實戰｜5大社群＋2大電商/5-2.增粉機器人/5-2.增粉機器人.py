@@ -60,7 +60,7 @@ time.sleep(3)
 for tag in tags:
     driver.get("https://www.instagram.com/explore/tags/" + tag) #切換到該tag
     time.sleep(random.randint(2,5))
-    driver.find_elements_by_class_name('_9AhH0')[9].click() #點選圖片(選擇最新發的)
+    driver.find_elements_by_class_name('_aang')[9].click() #點選圖片(選擇最新發的)
     for i in range(random.randint(20,40)):
         if i % 10 == 1:
             time.sleep(random.randint(5,20))
