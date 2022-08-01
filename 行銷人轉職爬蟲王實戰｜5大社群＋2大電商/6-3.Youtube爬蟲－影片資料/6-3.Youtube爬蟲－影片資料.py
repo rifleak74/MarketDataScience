@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat May 22 23:28:54 2021
-
 @author: Ivan
 課程教材：行銷人轉職爬蟲王實戰｜5大社群平台＋2大電商
 版權屬於「楊超霆」所有，若有疑問，可聯絡ivanyang0606@gmail.com
-
 第六章 Youtube中尋找KOL夥伴
 Youtube爬蟲－影片資料
 """
@@ -102,7 +100,7 @@ for yName, yChannel, allLink in zip(getdata['Youtuber頻道名稱'], getdata['�
             videoDate.append(datetime.strptime(getlook[1], "%m %d %Y")) # 取得影片時間
         else:
             getlook = getlook.replace('觀看次數：','')
-            getlook = getlook.split('次•')
+            getlook = getlook.split('次')
             videoDate.append(datetime.strptime(getlook[1], "%Y年%m月%d日")) # 取得影片時間
         looking.append(int(getlook[0])) # 取得觀看數
         
