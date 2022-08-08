@@ -72,14 +72,14 @@ for yName, yChannel, allLink in zip(getdata['Youtuber頻道名稱'], getdata['�
         # 去到該影片
         driver.get(link)
         
-        while len(driver.find_elements_by_xpath('//h1[@class="style-scope ytd-watch-metadata"]')) == 0:
+        while len(driver.find_elements_by_xpath('//h1[@class="title style-scope ytd-video-primary-info-renderer"]')) == 0:
             time.sleep(5)
         
         youtuberChannel.append(yName) # 取得Youtuber頻道名稱
         channelLink.append(yChannel) # 取得頻道網址
         videoLink.append(allLink) # 取得影片連結
         # 取得影片名稱
-        getvideoName = driver.find_element_by_xpath('//h1[@class="style-scope ytd-watch-metadata"]').text
+        getvideoName = driver.find_element_by_xpath('//h1[@class="title style-scope ytd-video-primary-info-renderer"]').text
         print('開始爬取： '+ getvideoName)
         videoName.append(getvideoName)
         # 取得讚數
@@ -91,24 +91,24 @@ for yName, yChannel, allLink in zip(getdata['Youtuber頻道名稱'], getdata['�
             getgood = getgood.replace(',','')
             good.append(getgood) 
         # 觀看數、影片時間
-        getlook = driver.find_element_by_id('formatted-snippet-text').text
-        getlook = getlook.split('日 ')[0]
+        getlook = driver.find_element_by_id('info-text').text
+        # getlook = getlook.split('日 ')[0]
 
         getlook = getlook.replace('觀看次數：','')
         getlook = getlook.replace(' ','')
         getlook = getlook.replace('.','')
         getlook = getlook.replace(',','')
         getlook = getlook.split('次')
-        videoDate.append(datetime.strptime(getlook[1], "%Y年%m月%d")) # 取得影片時間
+        videoDate.append(datetime.strptime(getlook[1], "%Y年%m月%d日")) # 取得影片時間
         
         looking.append(int(getlook[0])) # 取得觀看數
         time.sleep(random.randint(2,5))
         
         # 點擊更多內容
-        driver.find_element_by_id('expand').click()
+        driver.find_element_by_xpath('//yt-formatted-string[@class="more-button style-scope ytd-video-secondary-info-renderer"]').click()
         time.sleep(random.randint(2,5))
-        getContent = driver.find_element_by_xpath('//yt-formatted-string[@class="style-scope ytd-text-inline-expander"]').text
-        videoContent.append(getContent.split('日 ')[1]) # 取得影片介紹
+        getContent = driver.find_element_by_xpath('//div[@id="content"]/div[@id="description"]').text
+        videoContent.append(getContent) # 取得影片介紹
         
         # 先滾動一小段在取得留言數
         while len(driver.find_elements_by_xpath('//h2[@id="count"]/yt-formatted-string/span'))==0:
