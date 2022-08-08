@@ -98,7 +98,7 @@ for page in theurl:
     starNum.append(getglobalNum)
     
     # 客戶回饋大小
-    if len(driver.find_element_by_id('fitRecommendationsLinkRatingText')) == 0:
+    if len(driver.find_elements_by_id('fitRecommendationsLinkRatingText')) == 0:
         toosmall.append(0)
         small.append(0)
         goodsize.append(0)
