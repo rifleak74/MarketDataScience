@@ -12,6 +12,17 @@ from random import randint
 import pandas as pd
 thing = '花襯衫'
 
+def checkLive(obj):
+    if len(obj) == 0:
+        return '沒有資料'
+    else:
+        return
+
+def disappear(thestr = '字串', dspr = ['想刪除','的','字串']):
+    for i in dspr:
+        thestr = thestr.replace(i, '')
+    return thestr
+
 # 設定基本參數
 desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
 #此處必須換成自己電腦的User-Agent
@@ -97,12 +108,18 @@ for page in theurl:
     
     
     # 星星評分
-    star.append(driver.find_element_by_id('acrPopover').get_attribute("title").replace(' 顆星，最高 5 顆星',''))
+    if len(driver.find_elements_by_id('acrPopover'))==0:
+        star.append('沒有星等')
+    else:
+        star.append(driver.find_element_by_id('acrPopover').get_attribute("title").replace(' 顆星，最高 5 顆星',''))
     # 全球評分數量
-    getglobalNum = driver.find_element_by_id('acrCustomerReviewText').text
-    getglobalNum = getglobalNum.replace('等級','')
-    getglobalNum = getglobalNum.replace(',','')
-    starNum.append(getglobalNum)
+    if len(driver.find_elements_by_id('acrCustomerReviewText'))==0:
+        starNum.append(0)
+    else:
+        getglobalNum = driver.find_element_by_id('acrCustomerReviewText').text
+        getglobalNum = getglobalNum.replace('等級','')
+        getglobalNum = getglobalNum.replace(',','')
+        starNum.append(getglobalNum)
     
     # 客戶回饋大小
     if len(driver.find_elements_by_id('fitRecommendationsLinkRatingText')) == 0:
