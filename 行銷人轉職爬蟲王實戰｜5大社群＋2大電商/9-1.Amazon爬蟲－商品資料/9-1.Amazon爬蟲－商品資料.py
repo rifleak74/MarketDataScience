@@ -139,7 +139,8 @@ for page in theurl:
         big.append(getrequest[3].text)# 有點大
         toobig.append(getrequest[4].text)# 太大
         # 關閉選項
-        driver.find_element_by_xpath('//button[@data-action = "a-popover-close"]').click()
+        if len(driver.find_elements_by_xpath('//button[@data-action = "a-popover-close"]')) != 0:
+            driver.find_element_by_xpath('//button[@data-action = "a-popover-close"]').click()
         time.sleep(2)
     
     # 大小選項
