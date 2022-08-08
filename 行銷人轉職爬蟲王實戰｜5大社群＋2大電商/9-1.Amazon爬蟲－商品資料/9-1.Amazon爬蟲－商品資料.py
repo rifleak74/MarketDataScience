@@ -74,13 +74,18 @@ for page in theurl:
         getprice = driver.find_element_by_id('corePriceDisplay_desktop_feature_div').text
     
     getprice = getprice.replace('US$','') # 先把「US$」拿掉
-    getprice = getprice.replace('定價：','') # 把「US$」拿掉
-    if ' -' in getprice: # 利用「 - 」來切割兩個數字
-        getprice = getprice.replace('\n','') # 把「US$」拿掉
-        cutlist = getprice.split(' -')
-        getprice = (float(cutlist[0]) + float(cutlist[1]))/2 # 計算平均
+    if '有了交易' in getprice:
+        getprice = getprice[getprice.find('有了交易')+6:]
+        getprice = getprice.split('\n')[0]
     else:
-        getprice = getprice.replace('\n','.')
+    
+        getprice = getprice.replace('定價：','') # 把「US$」拿掉
+        if ' -' in getprice: # 利用「 - 」來切割兩個數字
+            getprice = getprice.replace('\n','') # 把「US$」拿掉
+            cutlist = getprice.split(' -')
+            getprice = (float(cutlist[0]) + float(cutlist[1]))/2 # 計算平均
+        else:
+            getprice = getprice.replace('\n','.')
     price.append(getprice)
     print(getprice)
     
