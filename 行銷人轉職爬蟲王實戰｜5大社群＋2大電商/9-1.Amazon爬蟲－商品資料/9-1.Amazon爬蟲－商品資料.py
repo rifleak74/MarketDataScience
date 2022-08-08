@@ -53,6 +53,7 @@ toobig = []
 size_options = []
 color_options = []
 description = []
+productDscrp = []
 global_range = []
 view_url = []
 for page in theurl:
@@ -67,36 +68,54 @@ for page in theurl:
     title.append(driver.find_element_by_id('title').text) 
     
     #商品定價
-    getprice = driver.find_element_by_id('corePrice_desktop').text
+    if len(driver.find_elements_by_id('corePriceDisplay_desktop_feature_div'))==0:
+        getprice = driver.find_element_by_id('corePrice_desktop').text
+    else:
+        getprice = driver.find_element_by_id('corePriceDisplay_desktop_feature_div').text
+    
     getprice = getprice.replace('US$','') # 先把「US$」拿掉
-    getprice = getprice.replace('\n','') # 把「US$」拿掉
     getprice = getprice.replace('定價：','') # 把「US$」拿掉
     if ' -' in getprice: # 利用「 - 」來切割兩個數字
+        getprice = getprice.replace('\n','') # 把「US$」拿掉
         cutlist = getprice.split(' -')
         getprice = (float(cutlist[0]) + float(cutlist[1]))/2 # 計算平均
+    else:
+        getprice = getprice.replace('\n','.')
     price.append(getprice)
+    print(getprice)
     
     # 星星評分
-    star.append(driver.find_element_by_id('acrPopover').get_attribute("title"))
+    star.append(driver.find_element_by_id('acrPopover').get_attribute("title").replace(' 顆星，最高 5 顆星',''))
     # 全球評分數量
     getglobalNum = driver.find_element_by_id('acrCustomerReviewText').text
+    getglobalNum = getglobalNum.replace('等級','')
+    getglobalNum = getglobalNum.replace(',','')
     starNum.append(getglobalNum)
     
     # 客戶回饋大小
-    driver.find_element_by_id('fitRecommendationsLinkRatingText').click()
-    # 太小
-    toosmall.append(driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')[0].text)
-    # 有點小
-    small.append(driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')[1].text)
-    # 尺寸正確
-    goodsize.append(driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')[2].text)
-    # 有點大
-    big.append(driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')[3].text)
-    # 太大
-    toobig.append(driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')[4].text)
+    if len(driver.find_element_by_id('fitRecommendationsLinkRatingText')) == 0:
+        toosmall.append(0)
+        small.append(0)
+        goodsize.append(0)
+        big.append(0)
+        toobig.append(0)
+    else:
+        driver.find_element_by_id('fitRecommendationsLinkRatingText').click()
+        getrequest = driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')
+        time.sleep(5)
+        
+        toosmall.append(getrequest[0].text)# 太小
+        small.append(getrequest[1].text)# 有點小
+        goodsize.append(getrequest[2].text)# 尺寸正確
+        big.append(getrequest[3].text)# 有點大
+        toobig.append(getrequest[4].text)# 太大
+        # 關閉選項
+        driver.find_element_by_xpath('//button[@data-action = "a-popover-close"]').click()
+        time.sleep(2)
     
     # 大小選項
     driver.find_element_by_xpath('//span[@data-csa-interaction-events = "click"]').click()
+    time.sleep(5)
     containar = []
     for i in driver.find_elements_by_xpath('//li[contains(@id, "size_name_")]'):
         if i.text != '選擇' and i.text != '':
@@ -111,10 +130,17 @@ for page in theurl:
     color_options.append(containar)
 
     # 商品描述
-    description.append(driver.find_element_by_id('productDescription').text)
+    if len(driver.find_elements_by_id('productDescription')) != 0:
+        productDscrp.append(driver.find_element_by_id('productDescription').text)
+    else:
+        productDscrp.append('')
+    
+    # 產品詳細資訊
+    description.append(driver.find_element_by_id('detailBullets_feature_div').text)
     # 全球排名
-    getdata = driver.find_element_by_id('SalesRank').text
-    getdata = getdata.replace('\n','')
+    getdata = driver.find_element_by_xpath('//div[@id = "detailBulletsWrapper_feature_div"]/ul').text
+    getdata = getdata.replace('暢銷商品排名: ','')
+    # getdata = getdata.replace('\n','')
     getdata = getdata.split('#')
     containar = {}
     for i in range(1,len(getdata)):
