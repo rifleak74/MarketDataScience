@@ -40,6 +40,7 @@ for i in range(5):
         
     time.sleep(5)
     
+brand = []
 title = []
 url = []
 price = []
@@ -64,6 +65,12 @@ for page in theurl:
     driver.get(page)
     time.sleep(randint( 7, 15))
     
+    # 品牌名稱
+    if len(driver.find_elements_by_id('bylineInfo')) == 0 :
+        brand.append('沒有牌子')
+    else:
+        brand.append(driver.find_element_by_id('bylineInfo').text)
+    
     # 商品名稱
     title.append(driver.find_element_by_id('title').text) 
     
@@ -87,7 +94,7 @@ for page in theurl:
         else:
             getprice = getprice.replace('\n','.')
     price.append(getprice)
-    print(getprice)
+    
     
     # 星星評分
     star.append(driver.find_element_by_id('acrPopover').get_attribute("title").replace(' 顆星，最高 5 顆星',''))
@@ -106,9 +113,9 @@ for page in theurl:
         toobig.append(0)
     else:
         driver.find_element_by_id('fitRecommendationsLinkRatingText').click()
-        getrequest = driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')
         time.sleep(5)
-        
+        getrequest = driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')
+        print(getrequest[0].text)
         toosmall.append(getrequest[0].text)# 太小
         small.append(getrequest[1].text)# 有點小
         goodsize.append(getrequest[2].text)# 尺寸正確
@@ -157,9 +164,13 @@ for page in theurl:
     global_range.append(containar)
     
     # 留言網址
-    view_url.append(driver.find_element_by_xpath('//a[@data-hook = "see-all-reviews-link-foot"]').get_attribute('href'))
+    if len(driver.find_elements_by_xpath('//a[@data-hook = "see-all-reviews-link-foot"]'))== 0 :
+        view_url.append('沒有留言')
+    else:
+        view_url.append(driver.find_element_by_xpath('//a[@data-hook = "see-all-reviews-link-foot"]').get_attribute('href'))
 
 dic = {
+       '品牌名稱' : brand,
        '商品名稱' : title,
         '網址' : url,
         '商品定價' : price,
@@ -173,6 +184,7 @@ dic = {
         '大小選項' : size_options,
         '顏色選項' : color_options,
         '商品描述' : description,
+        '產品資訊' : productDscrp,
         '全球排名' : global_range,
         '留言網址' : view_url
        }
