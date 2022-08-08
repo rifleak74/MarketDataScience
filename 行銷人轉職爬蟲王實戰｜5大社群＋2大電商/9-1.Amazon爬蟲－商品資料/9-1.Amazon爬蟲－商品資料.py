@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu May 13 12:16:20 2021
+Created on Mon Aug  8 15:52:04 2022
 
-@author: Ivan
-課程教材：行銷人轉職爬蟲王實戰｜5大社群平台＋2大電商
-版權屬於「楊超霆」所有，若有疑問，可聯絡ivanyang0606@gmail.com
-
-第九章 Amazon告訴您市場缺口
-Amazon爬蟲－商品資料
+@author: ivan
 """
+
 from selenium.webdriver import DesiredCapabilities
 from selenium import webdriver
 import time
@@ -37,7 +33,7 @@ for i in range(5):
     # 去到你想要的網頁
     driver.get("https://www.amazon.com/s?k="+ thing +"&page="+ str(i) +"ref=sr_pg_2")
     
-    geturl = driver.find_elements_by_xpath('//h2[@class="a-size-mini a-spacing-none a-color-base s-line-clamp-4"]/a[@class="a-link-normal a-text-normal"]')
+    geturl = driver.find_elements_by_xpath('//h2/a')
 
     for j in geturl:
         theurl.append(j.get_attribute('href'))
@@ -66,27 +62,28 @@ for page in theurl:
     # 去到你想要的網頁
     driver.get(page)
     time.sleep(randint( 7, 15))
-    # if "休閒扣領襯衫" in driver.find_element_by_id('wayfinding-breadcrumbs_feature_div').text:
-        
+    
     # 商品名稱
     title.append(driver.find_element_by_id('title').text) 
     
     #商品定價
-    if len(driver.find_elements_by_id('priceblock_ourprice')) == 0:
-        price.append(None)
-    else:
-        getprice = driver.find_element_by_id('priceblock_ourprice').text
-        getprice = getprice.replace('US$','') # 先把「US$」拿掉
-        if ' - ' in getprice: # 利用「 - 」來切割兩個數字
-            cutlist = getprice.split(' - ')
-            getprice = (float(cutlist[0]) + float(cutlist[1]))/2 # 計算平均
-        price.append(getprice)
+    getprice = driver.find_element_by_id('corePrice_desktop').text
+    getprice = getprice.replace('US$','') # 先把「US$」拿掉
+    getprice = getprice.replace('\n','') # 把「US$」拿掉
+    getprice = getprice.replace('定價：','') # 把「US$」拿掉
+    if ' -' in getprice: # 利用「 - 」來切割兩個數字
+        cutlist = getprice.split(' -')
+        getprice = (float(cutlist[0]) + float(cutlist[1]))/2 # 計算平均
+    price.append(getprice)
     
     # 星星評分
     star.append(driver.find_element_by_id('acrPopover').get_attribute("title"))
     # 全球評分數量
     getglobalNum = driver.find_element_by_id('acrCustomerReviewText').text
     starNum.append(getglobalNum)
+    
+    # 客戶回饋大小
+    driver.find_element_by_id('fitRecommendationsLinkRatingText').click()
     # 太小
     toosmall.append(driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')[0].text)
     # 有點小
@@ -99,6 +96,7 @@ for page in theurl:
     toobig.append(driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')[4].text)
     
     # 大小選項
+    driver.find_element_by_xpath('//span[@data-csa-interaction-events = "click"]').click()
     containar = []
     for i in driver.find_elements_by_xpath('//li[contains(@id, "size_name_")]'):
         if i.text != '選擇' and i.text != '':
