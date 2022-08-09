@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Aug  8 15:52:04 2022
+Created on Tue Aug  9 09:18:22 2022
 
 @author: ivan
 """
+
 
 from selenium.webdriver import DesiredCapabilities
 from selenium import webdriver
@@ -68,12 +69,13 @@ description = []
 productDscrp = []
 global_range = []
 view_url = []
-for page in theurl:
+for page in range(len(theurl)):
+    print('第 '+ str(page) + ' 個商品')
     #儲存網址
-    url.append(page)
+    url.append(theurl[page])
     
     # 去到你想要的網頁
-    driver.get(page)
+    driver.get(theurl[page])
     time.sleep(randint( 7, 15))
     
     # 品牌名稱
@@ -132,7 +134,6 @@ for page in theurl:
         driver.find_element_by_id('fitRecommendationsLinkRatingText').click()
         time.sleep(5)
         getrequest = driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')
-        print(getrequest[0].text)
         toosmall.append(getrequest[0].text)# 太小
         small.append(getrequest[1].text)# 有點小
         goodsize.append(getrequest[2].text)# 尺寸正確
@@ -141,7 +142,7 @@ for page in theurl:
         # 關閉選項
         if len(driver.find_elements_by_xpath('//button[@data-action = "a-popover-close"]')) != 0:
             driver.find_element_by_xpath('//button[@data-action = "a-popover-close"]').click()
-        time.sleep(2)
+        time.sleep(5)
     
     # 大小選項
     driver.find_element_by_xpath('//span[@data-csa-interaction-events = "click"]').click()
@@ -187,25 +188,31 @@ for page in theurl:
     else:
         view_url.append(driver.find_element_by_xpath('//a[@data-hook = "see-all-reviews-link-foot"]').get_attribute('href'))
 
-dic = {
-       '品牌名稱' : brand,
-       '商品名稱' : title,
-        '網址' : url,
-        '商品定價' : price,
-        '星星評分' : star,
-        '全球評分數量' : starNum,
-        '太小' : toosmall,
-        '有點小' : small,
-        '尺寸正確' : goodsize,
-        '有點大' : big,
-        '太大' : toobig,
-        '大小選項' : size_options,
-        '顏色選項' : color_options,
-        '商品描述' : description,
-        '產品資訊' : productDscrp,
-        '全球排名' : global_range,
-        '留言網址' : view_url
-       }
+    dic = {
+           '品牌名稱' : brand,
+           '商品名稱' : title,
+            '網址' : url,
+            '商品定價' : price,
+            '星星評分' : star,
+            '全球評分數量' : starNum,
+            '太小' : toosmall,
+            '有點小' : small,
+            '尺寸正確' : goodsize,
+            '有點大' : big,
+            '太大' : toobig,
+            '大小選項' : size_options,
+            '顏色選項' : color_options,
+            '商品描述' : description,
+            '產品資訊' : productDscrp,
+            '全球排名' : global_range,
+            '留言網址' : view_url
+           }
+    if page%10==9:
+        pd.DataFrame(dic).to_csv(
+                '到第'+str(page)+'頁_Amazon商品資料.csv', # 檔案名稱
+                encoding = 'utf-8-sig', # 編碼
+                index=False # 是否保留index
+                )
 pd.DataFrame(dic).to_csv(
         'Amazon商品資料.csv', # 檔案名稱
         encoding = 'utf-8-sig', # 編碼
