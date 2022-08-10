@@ -13,17 +13,6 @@ from random import randint
 import pandas as pd
 thing = '花襯衫'
 
-def checkLive(obj):
-    if len(obj) == 0:
-        return '沒有資料'
-    else:
-        return
-
-def disappear(thestr = '字串', dspr = ['想刪除','的','字串']):
-    for i in dspr:
-        thestr = thestr.replace(i, '')
-    return thestr
-
 # 設定基本參數
 desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
 #此處必須換成自己電腦的User-Agent
