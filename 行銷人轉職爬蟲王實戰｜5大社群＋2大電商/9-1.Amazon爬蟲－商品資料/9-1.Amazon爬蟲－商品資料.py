@@ -69,7 +69,7 @@ description = []
 productDscrp = []
 global_range = []
 view_url = []
-for page in range(len(theurl)):
+for page in range(140,len(theurl)):
     print('第 '+ str(page) + ' 個商品')
     #儲存網址
     url.append(theurl[page])
@@ -98,7 +98,7 @@ for page in range(len(theurl)):
         getprice = getprice[getprice.find('有了交易')+6:]
         getprice = getprice.split('\n')[0]
     else:
-    
+        
         getprice = getprice.replace('定價：','') # 把「US$」拿掉
         if ' -' in getprice: # 利用「 - 」來切割兩個數字
             getprice = getprice.replace('\n','') # 把「US$」拿掉
@@ -131,6 +131,7 @@ for page in range(len(theurl)):
         big.append(0)
         toobig.append(0)
     else:
+        time.sleep(5)
         driver.find_element_by_id('fitRecommendationsLinkRatingText').click()
         time.sleep(5)
         getrequest = driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')
@@ -159,7 +160,7 @@ for page in range(len(theurl)):
         getdata = i.get_attribute("title")
         containar.append(getdata.replace('請按下選擇 ','')) # 取代掉「請按下選擇」
     color_options.append(containar)
-
+    
     # 商品描述
     if len(driver.find_elements_by_id('productDescription')) != 0:
         productDscrp.append(driver.find_element_by_id('productDescription').text)
@@ -187,7 +188,7 @@ for page in range(len(theurl)):
         view_url.append('沒有留言')
     else:
         view_url.append(driver.find_element_by_xpath('//a[@data-hook = "see-all-reviews-link-foot"]').get_attribute('href'))
-
+    
     dic = {
            '品牌名稱' : brand,
            '商品名稱' : title,
