@@ -58,7 +58,7 @@ description = []
 productDscrp = []
 global_range = []
 view_url = []
-for page in range(140,len(theurl)):
+for page in range(0,len(theurl)):
     print('第 '+ str(page) + ' 個商品')
     #儲存網址
     url.append(theurl[page])
