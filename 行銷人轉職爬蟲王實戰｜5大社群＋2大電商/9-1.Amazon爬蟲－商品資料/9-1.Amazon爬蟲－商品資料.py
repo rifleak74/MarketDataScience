@@ -3,6 +3,11 @@
 Created on Fri Aug 12 11:46:17 2022
 
 @author: ivan
+課程教材：行銷人轉職爬蟲王實戰｜5大社群平台＋2大電商
+版權屬於「楊超霆」所有，若有疑問，可聯絡ivanyang0606@gmail.com
+
+第九章 Amazon告訴您市場缺口
+Amazon爬蟲－商品資料
 """
 
 from selenium.webdriver import DesiredCapabilities
