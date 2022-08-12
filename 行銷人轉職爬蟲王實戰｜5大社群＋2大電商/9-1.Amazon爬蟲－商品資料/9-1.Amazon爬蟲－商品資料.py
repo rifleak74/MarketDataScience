@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Aug  9 09:18:22 2022
+Created on Fri Aug 12 11:46:17 2022
 
 @author: ivan
 """
-
 
 from selenium.webdriver import DesiredCapabilities
 from selenium import webdriver
@@ -76,7 +75,7 @@ for page in range(0,len(theurl)):
     # 商品名稱
     title.append(driver.find_element_by_id('title').text) 
     
-    #商品定價
+    # 商品定價
     if len(driver.find_elements_by_id('corePriceDisplay_desktop_feature_div'))==0:
         getprice = driver.find_element_by_id('corePrice_desktop').text
     else:
@@ -86,9 +85,12 @@ for page in range(0,len(theurl)):
     if '有了交易' in getprice:
         getprice = getprice[getprice.find('有了交易')+6:]
         getprice = getprice.split('\n')[0]
+    elif '\n定價:\n' in getprice:
+        getprice = getprice[getprice.find('\n')+1:getprice.find('\n定價:\n')]
+        getprice = getprice.replace('\n','.')
     else:
         
-        getprice = getprice.replace('定價：','') # 把「US$」拿掉
+        getprice = getprice.replace('定價：','') # 把「定價」拿掉
         if ' -' in getprice: # 利用「 - 」來切割兩個數字
             getprice = getprice.replace('\n','') # 把「US$」拿掉
             cutlist = getprice.split(' -')
