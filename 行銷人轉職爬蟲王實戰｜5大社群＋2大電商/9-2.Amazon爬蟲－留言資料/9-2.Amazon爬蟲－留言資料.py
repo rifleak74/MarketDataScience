@@ -36,7 +36,7 @@ comment = []
 helpful = []
 
 
-for data in range(26, len(productData)):
+for data in range(0, len(productData)):
     # 決定要抓取的網址
     geturl = productData.iloc[data]['留言網址']
     
