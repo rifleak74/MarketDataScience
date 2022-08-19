@@ -16,6 +16,7 @@ import time
 from random import randint
 import pandas as pd
 productData = pd.read_csv('Amazon商品資料.csv', encoding = 'utf-8')
+productData = productData[productData['留言網址'] != '沒有留言']
 
 # 請求使用Header，可能需要替換cookie
 head = {
