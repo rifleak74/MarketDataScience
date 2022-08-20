@@ -122,7 +122,7 @@ for data in range(0, len(productData)):
             doit = False
         print('累計資料數量： '+ str(len(who)))
         page = page + 1
-        time.sleep(randint( 5, 10)) # 睡覺覺
+        time.sleep(randint( 10, 20)) # 睡覺覺
     print(productData.iloc[data]['商品名稱']+ ' 執行完畢')
 
     dic = {
