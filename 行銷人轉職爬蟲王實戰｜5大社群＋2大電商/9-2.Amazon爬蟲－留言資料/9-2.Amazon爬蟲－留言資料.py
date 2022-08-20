@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed May 19 19:58:33 2021
+Created on Sat Aug 20 21:14:52 2022
 
 @author: Ivan
 課程教材：行銷人轉職爬蟲王實戰｜5大社群平台＋2大電商
@@ -22,7 +22,7 @@ productData = productData[productData['留言網址'] != '沒有留言']
 head = {
         'accept-encoding': 'gzip, deflate, br',
         'accept-language': 'en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7',
-        'cookie': 'session-id=136-0340723-9192226; session-id-time=2082787201l; i18n-prefs=USD; lc-main=zh_TW; ubid-main=134-3980769-3693765; sp-cdn="L5Z9:TW"; csm-hit=tb:TZMAJPK9WYNJ0Y80TMZK+s-TZMAJPK9WYNJ0Y80TMZK|1660289724778&t:1660289724778&adb:adblk_no; session-token=k3RS++Iksjl7C0tJ6mcNq0RKrVUijnLF3sGiIoxeKYwsG3aTueKJ6BGxf1Z6C+j3R4W9UBC/Jlyv24bO/e4JyDPhLhiKZs64nYY0UmUBqtBsgRAkgHnkzJ4KCI2Soocp46TvfNQe7YzoO/vHjHXoCJ0bVCvhkshLYNLWvkQTSxIJaMYOP3a0Q5rSPnicXs3+54f73HotO2JZaPwBsmnxSVPrGpZpqRNI',
+        'cookie': 'session-id=136-0340723-9192226; session-id-time=2082787201l; i18n-prefs=USD; lc-main=zh_TW; ubid-main=134-3980769-3693765; sp-cdn="L5Z9:TW"; AMCV_7742037254C95E840A4C98A6%40AdobeOrg=1585540135%7CMCIDTS%7C19217%7CMCMID%7C35766644811422580582570690028170120544%7CMCAAMLH-1660894843%7C11%7CMCAAMB-1660894843%7CRKhpRz8krg2tLO6pguXWp5olkAcUniQYPHaMWWgdJ3xzPWQmdj0y%7CMCOPTOUT-1660297243s%7CNONE%7CMCAID%7CNONE%7CvVersion%7C4.4.0; regStatus=pre-register; aws-target-data=%7B%22support%22%3A%221%22%7D; aws-target-visitor-id=1660290058678-241598.32_0; session-token=B/6zeP2udVs1ZsXHb3XMM7b1Q3fdOLgYEYeBXzq8szNmfY9PDKEbVp1YoDGdmp5ghrm1RATTEwtBzI6ba/JqwisTZUTCCPZ79TGQJ4UA2XxbcjaR57KnEInj9Ganl/ra73G5ALSE1JWW1ypsuHtgPld1GqLmYqEiZ1fXD40AlhpfLGjbNwpq6nXZVsfqC8fzIQ1FSoISXjkny3VkPKMRmZQQ760XK/Gj; csm-hit=tb:CGPN06Y24Z2V7X03ABND+s-CGPN06Y24Z2V7X03ABND|1660966628616&t:1660966628616&adb:adblk_no',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
         }
 
@@ -37,7 +37,7 @@ comment = []
 helpful = []
 
 
-for data in range(0, len(productData)):
+for data in range(, len(productData)):
     # 決定要抓取的網址
     geturl = productData.iloc[data]['留言網址']
     
@@ -89,7 +89,11 @@ for data in range(0, len(productData)):
                     thetime.append(datetime.strptime(gettime_list[1], "%m %d, %Y")) # 儲存留言時間
                     location.append(gettime_list[0].replace('Reviewed in the ','')) # 儲存留言地點
                 else:
-                    gettime_list = gettime.split('在')
+                    if '於' in gettime: # 有時會出現不同呈現字串，範例:'在 2022年7月10日 於瑞典評論'
+                        gettime = gettime.replace('在 ','')
+                        gettime_list = gettime.split(' 於')
+                    else:
+                        gettime_list = gettime.split('在')
                     cuttime = gettime_list[0].replace(' ','')
                     thetime.append(datetime.strptime(cuttime, "%Y年%m月%d日")) # 儲存留言時間
                     location.append(gettime_list[1].replace('評論','')) # 儲存留言地點
@@ -122,7 +126,7 @@ for data in range(0, len(productData)):
             doit = False
         print('累計資料數量： '+ str(len(who)))
         page = page + 1
-        time.sleep(randint( 10, 20)) # 睡覺覺
+        time.sleep(randint( 5, 20)) # 睡覺覺
     print(productData.iloc[data]['商品名稱']+ ' 執行完畢')
 
     dic = {
