@@ -11,11 +11,10 @@ Python寄信基礎－寄送檔案教學
 """
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-from email.mime.application import MIMEApplication 
 import smtplib
+from email.mime.image import MIMEImage
 from pathlib import Path
-
+from email.mime.application import MIMEApplication 
 
 
 sendFrom = "寄件者信箱"
