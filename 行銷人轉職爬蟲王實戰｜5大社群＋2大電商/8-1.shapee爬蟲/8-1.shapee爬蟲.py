@@ -13,45 +13,52 @@ import requests
 import json
 import pandas as pd
 import time
-# selenium
-from selenium.webdriver import DesiredCapabilities
+# selenium，2022/9/17 將套件更新到4.4.3版本，因此寫法全部都更新過
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 import re
 import random
 
 keyword = '花襯衫'
-page = 50
+page = 10
 ecode = 'utf-8-sig'
-my_headers = {'authority' : 'shopee.tw',
-     'method': 'GET',
-     'path': '/api/v1/item_detail/?item_id=1147052312&shop_id=17400098',
-     'scheme': 'https',
-     'accept': '*/*',
-     'accept-encoding': 'gzip, deflate, br',
-     'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6',
-     'cookie': '_ga=GA1.2.1087113924.1519696808; SPC_IA=-1; SPC_F=SDsFai6wYMRFvHCNzyBRCvFIp92UnuU3; REC_T_ID=f2be85da-1b61-11e8-a60b-d09466041854; __BWfp=c1519696822183x3c2b15d09; __utmz=88845529.1521362936.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); _atrk_siteuid=HEgUlHUKcEXQZWpB; SPC_EC=-; SPC_U=-; SPC_T_ID="vBBUETICFqj4EWefxIdZzfzutfKhrgytH2wyevGxiObL3hFEfy0dpQSOM/yFzaGYQLUANrPe7QZ4hqLZotPs72MhLd8aK0qhIwD5fqDrlRs="; SPC_T_IV="IpxA2sGrOUQhMH4IaolDSA=="; cto_lwid=2fc9d64c-3cfd-4cf9-9de7-a1516b03ed79; csrftoken=EDL9jQV76T97qmB7PaTPorKtfMlU7eUO; bannerShown=true; _gac_UA-61915057-6=1.1529645767.EAIaIQobChMIwvrkw8bm2wIVkBiPCh2bZAZgEAAYASAAEgIglPD_BwE; _gid=GA1.2.1275115921.1529896103; SPC_SI=2flgu0yh38oo0v2xyzns9a2sk6rz9ou8; __utma=88845529.1087113924.1519696808.1528465088.1529902919.7; __utmc=88845529; appier_utmz=%7B%22csr%22%3A%22(direct)%22%2C%22timestamp%22%3A1529902919%7D; _atrk_sync_cookie=true; _gat=1',
-     'if-none-match': "55b03-9ff4fb127aff56426f5ec9022baec594",
-     'referer': 'https://shopee.tw/6-9-%F0%9F%87%B0%F0%9F%87%B7%E9%9F%93%E5%9C%8B%E9%80%A3%E7%B7%9A-omg!%E6%96%B0%E8%89%B2%E7%99%BB%E5%A0%B4%F0%9F%94%A5%E4%BA%A4%E5%8F%89%E7%BE%8E%E8%83%8CBra%E5%BD%88%E5%8A%9B%E8%83%8C%E5%BF%83-i.17400098.1147052312',
-     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36',
-     'x-api-source': 'pc',
-     'x-requested-with': 'XMLHttpRequest'
+my_headers = {
+    'accept': '*/*',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+    'cookie': '__LOCALE__null=TW; SPC_T_ID=wxv+iSLj3O7H6qDOQhZiKAuNxFL3vCIzSNxPKjyp/e3aZkOyOpXUx36SHoJElA90C3p7uOlJ+TBB3Ec0C9CKh3JR6cSyqr2sA0D6bae/+ChxDOtnsqCGB9rZNANBtHsYUbMMuDUc5wDyh0fS1tPw8F3riR7+kTzgYmFs0FOwQzg=; SPC_T_IV=R3RvOFZPUXk0MEU5UEwzRQ==; SPC_F=06HnjeBKD6QfQaxu2WzZe0oWe46Q6le8; REC_T_ID=1c06438a-364c-11ed-b2f3-ee7c6594edb5; csrftoken=iIITffWMfgRQP8g0FHTBLJ2r4Ko1Otw6; _gcl_au=1.1.1251735121.1663393609; SPC_IA=-1; SPC_EC=-; SPC_T_ID="wxv+iSLj3O7H6qDOQhZiKAuNxFL3vCIzSNxPKjyp/e3aZkOyOpXUx36SHoJElA90C3p7uOlJ+TBB3Ec0C9CKh3JR6cSyqr2sA0D6bae/+ChxDOtnsqCGB9rZNANBtHsYUbMMuDUc5wDyh0fS1tPw8F3riR7+kTzgYmFs0FOwQzg="; SPC_U=-; SPC_T_IV="R3RvOFZPUXk0MEU5UEwzRQ=="; SPC_SI=WpwhYwAAAABvVTNObFBDMJ22HAAAAAAAOEFWSThOaVQ=; SPC_R_T_ID=wxv+iSLj3O7H6qDOQhZiKAuNxFL3vCIzSNxPKjyp/e3aZkOyOpXUx36SHoJElA90C3p7uOlJ+TBB3Ec0C9CKh3JR6cSyqr2sA0D6bae/+ChxDOtnsqCGB9rZNANBtHsYUbMMuDUc5wDyh0fS1tPw8F3riR7+kTzgYmFs0FOwQzg=; SPC_R_T_IV=R3RvOFZPUXk0MEU5UEwzRQ==; _fbp=fb.1.1663393614946.166652952; _QPWSDCXHZQA=58608429-1742-4d4b-b700-1610287752ea; AMP_TOKEN=%24NOT_FOUND; _gid=GA1.2.900060094.1663393617; _ga=GA1.1.1772813716.1663393612; shopee_webUnique_ccd=ZLvsf7u90HavJpxcPjL1MA%3D%3D%7CQcr1Rvv7VsFJ7%2FBK9LzI9kg79UDWk6hFShOyEvvca2mBD900Mr3ck1TCP6RzCXel622tEqXT7%2F1%2FZGmH9kyAbaHYSCHiVmGouQ%3D%3D%7CpPquNK0ZO5EnPU1J%7C06%7C3; ds=c635d5e472189f9285afa538288e5acb; cto_bundle=XQYXsF80c2hvSDRIMElWRXd3ejVKY3hIanZSTXVQRlZIR0VCYXdMb0QlMkJMWmE2Tm5NbTBGWFpQdjFMNmszMHY5dW1QMkltdERWJTJGWlJNMVljRklrTURLb0tWNGFZYktSWUV5YUdMTThKT2dSemtlWTgxd3JuN0h2MngxTVAwVDklMkJGT2tzWlZ4YmlUdFU0Unc5Y3FIamo5OGJ1TEElM0QlM0Q; _ga_RPSBE3TQZZ=GS1.1.1663393612.1.1.1663395067.60.0.0',
+    'if-none-match-': '55b03-9e2557dfd0e772de9f277b50d1165cc2',
+    'referer': 'https://shopee.tw/%E8%8A%B1%E8%A5%AF%E8%A1%AB-50%E6%AC%BE%E5%8F%AF%E9%81%B8-%E9%96%8B%E8%A1%AB-%E8%A5%AF%E8%A1%AB-%E7%94%B7%E7%94%9F%E5%A4%8F%E5%A8%81%E5%A4%B7%E7%9F%AD%E8%A2%96%E8%A5%AF%E8%A1%AB-%E5%BA%A6%E5%81%87%E9%A2%A8%E8%A5%AF%E8%A1%AB-%E7%9F%AD%E8%A2%96%E8%A5%AF%E8%A1%AB-%E4%BA%94%E5%88%86%E8%A2%96%E8%A5%AF%E8%A1%AB-%E7%94%B7%E7%94%9F%E4%B8%8A%E8%A1%A3-%E5%AF%AC%E9%AC%86%E8%8A%B1%E8%A5%AF%E8%A1%AB-%E8%A5%AF%E8%A1%AB-%E6%BC%94%E5%87%BA%E6%9C%8D-i.5695643.16302986550?sp_atk=8d962fa5-d6ce-48ee-b150-79d3d469d3e2&xptdk=8d962fa5-d6ce-48ee-b150-79d3d469d3e2',
+    'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+    'x-api-source': 'pc',
+    'x-requested-with': 'XMLHttpRequest',
+    'x-shopee-language': 'zh-Hant'
       }     
 
 # 進入每個商品，抓取買家留言
 def goods_comments(item_id, shop_id):
-    url = 'https://shopee.tw/api/v1/comment_list/?item_id='+ str(item_id) + '&shop_id=' + str(shop_id) + '&offset=0&limit=200&flag=1&filter=0'
+    # url = 'https://shopee.tw/api/v2/item/get_ratings?itemid='+ str(item_id) + '&shop_id=' + str(shop_id) + '&offset=0&limit=200&flag=1&filter=0'
+    url = 'https://shopee.tw/api/v2/item/get_ratings?filter=0&flag=1&itemid='+ str(item_id) + '&limit=50&offset=0&shopid=' + str(shop_id) + '&type=0'
     r = requests.get(url,headers = my_headers)
     st= r.text.replace("\\n","^n")
     st=st.replace("\\t","^t")
     st=st.replace("\\r","^r")
     
     gj=json.loads(st)
-    return gj['comments']
+    return gj['data']['ratings']
     
 
 # 進入每個商品，抓取賣家更細節的資料（商品文案、SKU）
 def goods_detail(item_id, shop_id):
-    url = 'https://shopee.tw/api/v2/item/get?itemid=' + str(item_id) + '&shopid=' + str(shop_id)
+    url = 'https://shopee.tw/api/v4/item/get?itemid=' + str(item_id) + '&shopid=' + str(shop_id)
     r = requests.get(url,headers = my_headers)
     st= r.text.replace("\\n","^n")
     st=st.replace("\\t","^t")
@@ -60,13 +67,9 @@ def goods_detail(item_id, shop_id):
     gj=json.loads(st)
     return gj
 
-# 設定基本參數
-desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
-#此處必須換成自己電腦的User-Agent
-desired_capabilities['phantomjs.page.customHeaders.User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
 
-# PhantomJS driver 路徑 似乎只能絕對路徑
-driver = webdriver.PhantomJS(executable_path = 'phantomjs', desired_capabilities=desired_capabilities)
+# 自動下載ChromeDriver
+service = ChromeService(executable_path=ChromeDriverManager().install())
 
 # 關閉通知提醒
 chrome_options = webdriver.ChromeOptions()
@@ -74,9 +77,10 @@ prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs",prefs)
 
 # 開啟瀏覽器
-driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
+driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
 time.sleep(5)
-            
+
+# 開啟網頁
 driver.get('https://shopee.tw/search?keyword=' + keyword )
 time.sleep(10)
 
@@ -96,22 +100,18 @@ for i in range(int(page)):
     stock = []
     price = []
     ctime = []
-    currency = []
     description = []
     discount = []
     can_use_bundle_deal = []
     can_use_wholesale = []
     tier_variations = []
-    hashtag_list = []
     historical_sold = []
     is_cc_installment_payment_eligible = []
     is_official_shop = []
     is_pre_order = []
-    is_slash_price_item = []
     liked_count = []
     shop_location = []
     SKU = []
-    view_count = []
     cmt_count = []
     five_star = []
     four_star = []
@@ -119,8 +119,6 @@ for i in range(int(page)):
     two_star = []
     one_star = []
     rating_star = []
-    rcount_with_context =[]
-    rcount_with_image =[]
     
     driver.get('https://shopee.tw/search?keyword=' + keyword + '&page=' + str(i))
 
@@ -130,7 +128,7 @@ for i in range(int(page)):
         time.sleep(2)
     
     #取得商品內容
-    for item, thename in zip(driver.find_elements_by_xpath('//*[@data-sqe="link"]'), driver.find_elements_by_xpath('//*[@data-sqe="name"]')):
+    for item, thename in zip(driver.find_elements(by=By.XPATH, value='//*[@data-sqe="link"]'), driver.find_elements(by=By.XPATH, value='//*[@data-sqe="name"]')):
         #商品ID、商家ID
         getID = item.get_attribute('href')
         theitemid = int((getID[getID.rfind('.')+1:getID.rfind('?')]))
@@ -149,8 +147,8 @@ for i in range(int(page)):
         thecontent = thecontent.replace('萬','000')
         thecut = thecontent.split('\n')
 
-        if re.search('市|區|縣|鄉|海外|中國大陸', thecontent): #有時會沒有商品地點資料
-            if re.search('已售出', thecontent): #有時會沒銷售資料
+        if bool(re.search('市|區|縣|鄉|海外|中國大陸', thecontent)): #有時會沒有商品地點資料
+            if bool(re.search('已售出', thecontent)): #有時會沒銷售資料
                 if '出售' in thecut[-3][1:]:
                     theprice = thecut[-4][1:]
                 else:
@@ -176,23 +174,20 @@ for i in range(int(page)):
         price.append(int(theprice))
         
         #請求商品詳細資料
-        itemDetail = goods_detail(item_id = theitemid, shop_id = theshopid)['item']
+        itemDetail = goods_detail(item_id = theitemid, shop_id = theshopid)['data']
         
         brand.append(itemDetail['brand']) #品牌
         stock.append(itemDetail['stock']) #存貨數量
         ctime.append(itemDetail['ctime']) #上架時間
-        currency.append(itemDetail['currency']) #交易貨幣種類
         description.append(itemDetail['description']) #商品文案
         discount.append(itemDetail['discount']) #折數
         can_use_bundle_deal.append(itemDetail['can_use_bundle_deal']) #可否搭配購買
         can_use_wholesale.append(itemDetail['can_use_wholesale']) #可否大量批貨購買
         tier_variations.append(itemDetail['tier_variations']) #選項
-        hashtag_list.append(itemDetail['hashtag_list']) #tag
         historical_sold.append(itemDetail['historical_sold']) #歷史銷售量
         is_cc_installment_payment_eligible.append(itemDetail['is_cc_installment_payment_eligible']) #可否分期付款
         is_official_shop.append(itemDetail['is_official_shop']) #是否官方賣家帳號
         is_pre_order.append(itemDetail['is_pre_order']) #是否可預購
-        is_slash_price_item.append(itemDetail['is_slash_price_item']) #是否減價
         liked_count.append(itemDetail['liked_count']) #喜愛數量
         
         #SKU
@@ -200,7 +195,6 @@ for i in range(int(page)):
         for sk in itemDetail['models']:
             all_sku.append(sk['name'])
         SKU.append(all_sku) #SKU
-        view_count.append(itemDetail['view_count']) #瀏覽人數
         shop_location.append(itemDetail['shop_location']) #商家地點
         cmt_count.append(itemDetail['cmt_count']) #評價數量
         five_star.append( itemDetail['item_rating']['rating_count'][5] ) #五星
@@ -209,8 +203,6 @@ for i in range(int(page)):
         two_star.append( itemDetail['item_rating']['rating_count'][2] ) #二星
         one_star.append( itemDetail['item_rating']['rating_count'][1] ) #一星
         rating_star.append(itemDetail['item_rating']['rating_star']) #評分
-        rcount_with_context.append(itemDetail['item_rating']['rcount_with_context']) #附上評論
-        rcount_with_image.append(itemDetail['item_rating']['rcount_with_image']) #附上圖片
         
         # 消費者評論詳細資料
         iteComment = goods_comments(item_id = theitemid, shop_id = theshopid)
@@ -268,23 +260,18 @@ for i in range(int(page)):
             '品牌':brand,
             '存貨數量':stock,
             '價格':price,
-            '上架時間':ctime,
-            '交易貨幣種類':currency,
             '商品文案':description,
             '折數':discount,
             '可否搭配購買':can_use_bundle_deal,
             '可否大量批貨購買':can_use_wholesale,
             '選項':tier_variations,
-            'Tag':hashtag_list,
             '歷史銷售量':historical_sold,
             '可否分期付款':is_cc_installment_payment_eligible,
             '是否官方賣家帳號':is_official_shop,
             '是否可預購':is_pre_order,
-            '是否減價':is_slash_price_item,
             '喜愛數量':liked_count,
             '商家地點':shop_location,
             'SKU':SKU,
-            '瀏覽人數':view_count,
             '評價數量':cmt_count,
             '五星':five_star,
             '四星':four_star,
@@ -292,8 +279,6 @@ for i in range(int(page)):
             '二星':two_star,
             '一星':one_star,
             '評分':rating_star,
-            '附上評論':rcount_with_context,
-            '附上圖片':rcount_with_image
             }
 
     #資料整合
