@@ -7,9 +7,11 @@ Created on Sat May 22 23:28:54 2021
 第六章 Youtube中尋找KOL夥伴
 Youtube爬蟲－影片資料
 """
-# selenium
-from selenium.webdriver import DesiredCapabilities
+# selenium，2022/9/17 將套件更新到4.4.3版本，因此寫法全部都更新過
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import time
 import random
@@ -23,14 +25,14 @@ def scroll(driver, xpathText):
     while doit:
         driver.execute_script('window.scrollBy(0,4000)')
         time.sleep(1)
-        element = driver.find_elements_by_xpath(xpathText) # 抓取指定的標籤
+        element = driver.find_elements(by=By.XPATH, value=xpathText) # 抓取指定的標籤
         if len(element) > remenber: # 檢查滾動後的數量有無增加
             remenber = len(element)
         else: # 沒增加則等待一下，然後在滾動一次
             time.sleep(random.randint(5,20))
             driver.execute_script('window.scrollBy(0,4000)')
             time.sleep(3)
-            element = driver.find_elements_by_xpath(xpathText) # 抓取指定的標籤
+            element = driver.find_elements(by=By.XPATH, value=xpathText) # 抓取指定的標籤
             if len(element) > remenber: # 檢查滾動後的數量有無增加
                 remenber = len(element)
             else:
@@ -38,18 +40,16 @@ def scroll(driver, xpathText):
         time.sleep(2)
     return element #回傳元素內容
 
-# 設定基本參數
-desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
-#此處必須換成自己電腦的User-Agent
-desired_capabilities['phantomjs.page.customHeaders.User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-# PhantomJS driver 路徑 似乎只能絕對路徑
-driver = webdriver.PhantomJS(executable_path = 'phantomjs', desired_capabilities=desired_capabilities)
+# 自動下載ChromeDriver
+service = ChromeService(executable_path=ChromeDriverManager().install())
+
 # 關閉通知提醒
 chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs",prefs)
+
 # 開啟瀏覽器
-driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
+driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
 time.sleep(5)
 
 #抓取csv資料
@@ -72,18 +72,18 @@ for yName, yChannel, allLink in zip(getdata['Youtuber頻道名稱'], getdata['�
         # 去到該影片
         driver.get(link)
         
-        while len(driver.find_elements_by_xpath('//h1[@class="title style-scope ytd-video-primary-info-renderer"]')) == 0:
+        while len(driver.find_elements(by=By.XPATH, value='//h1[@class="title style-scope ytd-video-primary-info-renderer"]')) == 0:
             time.sleep(5)
         
         youtuberChannel.append(yName) # 取得Youtuber頻道名稱
         channelLink.append(yChannel) # 取得頻道網址
         videoLink.append(allLink) # 取得影片連結
         # 取得影片名稱
-        getvideoName = driver.find_element_by_xpath('//h1[@class="title style-scope ytd-video-primary-info-renderer"]').text
+        getvideoName = driver.find_element(by=By.XPATH, value='//h1[@class="title style-scope ytd-video-primary-info-renderer"]').text
         print('開始爬取： '+ getvideoName)
         videoName.append(getvideoName)
         # 取得讚數
-        getgood = driver.find_element_by_xpath('//div[@id="menu-container"]/div/ytd-menu-renderer/div[1]/ytd-toggle-button-renderer[1]/a/yt-formatted-string').get_attribute('aria-label')
+        getgood = driver.find_element(by=By.XPATH, value='//div[@id="menu-container"]/div/ytd-menu-renderer/div[1]/ytd-toggle-button-renderer[1]/a/yt-formatted-string').get_attribute('aria-label')
         if '尚未有人表示喜歡' in getgood:
             good.append(0) 
         else:
@@ -91,7 +91,7 @@ for yName, yChannel, allLink in zip(getdata['Youtuber頻道名稱'], getdata['�
             getgood = getgood.replace(',','')
             good.append(getgood) 
         # 觀看數、影片時間
-        getlook = driver.find_element_by_id('info-text').text
+        getlook = driver.find_element(by=By.XPATH, value='info-text').text
         # getlook = getlook.split('日 ')[0]
 
         getlook = getlook.replace('觀看次數：','')
@@ -105,24 +105,24 @@ for yName, yChannel, allLink in zip(getdata['Youtuber頻道名稱'], getdata['�
         time.sleep(random.randint(2,5))
         
         # 點擊更多內容
-        driver.find_element_by_xpath('//yt-formatted-string[@class="more-button style-scope ytd-video-secondary-info-renderer"]').click()
+        driver.find_element(by=By.XPATH, value='//yt-formatted-string[@class="more-button style-scope ytd-video-secondary-info-renderer"]').click()
         time.sleep(random.randint(2,5))
-        getContent = driver.find_element_by_xpath('//div[@id="content"]/div[@id="description"]').text
+        getContent = driver.find_element(by=By.XPATH, value='//div[@id="content"]/div[@id="description"]').text
         videoContent.append(getContent) # 取得影片介紹
         
         # 先滾動一小段在取得留言數
-        while len(driver.find_elements_by_xpath('//h2[@id="count"]/yt-formatted-string/span'))==0:
+        while len(driver.find_elements(by=By.XPATH, value='//h2[@id="count"]/yt-formatted-string/span'))==0:
             driver.execute_script('window.scrollBy(0,'+str(random.randint(30,50))+')')
             time.sleep(random.randint(2,5))
 
-        getcommentNum = driver.find_element_by_xpath('//h2[@id="count"]/yt-formatted-string/span').text
+        getcommentNum = driver.find_element(by=By.XPATH, value='//h2[@id="count"]/yt-formatted-string/span').text
         getcommentNum = getcommentNum.replace(',','')
         commentNum.append(int(getcommentNum)) # 取得留言數
         
         #--- 開始進行「取得留言」工程
         # 滾動頁面
         getcomment = scroll(driver, '//div[@id="main"]')
-        getfans = driver.find_elements_by_id('author-text') # 發言者
+        getfans = driver.find_elements(by=By.XPATH, value='author-text') # 發言者
         
         # 儲存留言內容
         commentMan = []
