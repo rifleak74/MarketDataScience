@@ -9,9 +9,11 @@ Created on Sat May 22 21:27:55 2021
 第六章 Youtube中尋找KOL夥伴
 Youtube爬蟲－社群資料
 """
-# selenium
-from selenium.webdriver import DesiredCapabilities
+# selenium，2022/9/17 將套件更新到4.4.3版本，因此寫法全部都更新過
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import time
 from tqdm import tqdm
@@ -23,14 +25,14 @@ def scroll(driver, xpathText):
     while doit:
         driver.execute_script('window.scrollBy(0,4000)')
         time.sleep(1)
-        element = driver.find_elements_by_xpath(xpathText) # 抓取指定的標籤
+        element = driver.find_elements(by=By.XPATH, value=xpathText) # 抓取指定的標籤
         if len(element) > remenber: # 檢查滾動後的數量有無增加
             remenber = len(element)
         else: # 沒增加則等待一下，然後在滾動一次
             time.sleep(2)
             driver.execute_script('window.scrollBy(0,4000)')
             time.sleep(1)
-            element = driver.find_elements_by_xpath(xpathText) # 抓取指定的標籤
+            element = driver.find_element(by=By.XPATH, value=xpathText) # 抓取指定的標籤
             if len(element) > remenber: # 檢查滾動後的數量有無增加
                 remenber = len(element)
             else:
@@ -39,18 +41,16 @@ def scroll(driver, xpathText):
     return element #回傳元素內容
 
 
-# 設定基本參數
-desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
-#此處必須換成自己電腦的User-Agent
-desired_capabilities['phantomjs.page.customHeaders.User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-# PhantomJS driver 路徑 似乎只能絕對路徑
-driver = webdriver.PhantomJS(executable_path = 'phantomjs', desired_capabilities=desired_capabilities)
+# 自動下載ChromeDriver
+service = ChromeService(executable_path=ChromeDriverManager().install())
+
 # 關閉通知提醒
 chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs",prefs)
+
 # 開啟瀏覽器
-driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
+driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
 time.sleep(5)
 
 #抓取Youtuber_頻道資料.csv
@@ -88,17 +88,17 @@ for yName, yChannel in zip(getdata['Youtuber頻道名稱'], getdata['頻道網�
         driver.get(goto_url)
         time.sleep(3)
         
-        articleContent.append(driver.find_element_by_id('expander').text) # 取得文章內文
-        good.append(driver.find_element_by_id('vote-count-middle').text) # 取得文章讚數
+        articleContent.append(driver.find_element(by=By.ID, value='expander').text) # 取得文章內文
+        good.append(driver.find_element(by=By.ID, value='vote-count-middle').text) # 取得文章讚數
         
         # 取得留言總數量
-        getcommentNum = int(driver.find_element_by_xpath('//h2[@id="count"]/yt-formatted-string/span').text)
+        getcommentNum = int(driver.find_element(by=By.XPATH, value='//h2[@id="count"]/yt-formatted-string/span').text)
         commentNum.append(getcommentNum)
         
         #--- 開始進行「取得留言」工程
         # 滾動頁面
         getcomment = scroll(driver, '//div[@id="main"]')
-        getfans = driver.find_elements_by_id('author-text') # 發言者
+        getfans = driver.find_element(by=By.ID, value='author-text') # 發言者
             
         # 儲存留言內容
         commentMan = []
