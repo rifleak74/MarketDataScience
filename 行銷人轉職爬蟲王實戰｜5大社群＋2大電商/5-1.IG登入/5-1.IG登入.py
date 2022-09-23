@@ -46,4 +46,7 @@ time.sleep(3)
 
 driver.find_element(By.XPATH, value='//*[@type="submit"]').click()
 time.sleep(3)
-driver.find_elements(By.XPATH, value='//*[@type="button"]')[1].click() #是否儲存瀏覽器資料，「稍後再說」
+
+# 若瀏覽器會問是否儲存，那開啟以下兩行註解
+# driver.find_elements(By.XPATH, value='//*[@type="button"]')[1].click() #是否儲存瀏覽器資料，「稍後再說」
+# time.sleep(3)
