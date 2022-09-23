@@ -9,21 +9,18 @@ Created on Fri Aug 12 11:46:17 2022
 第九章 Amazon告訴您市場缺口
 Amazon爬蟲－商品資料
 """
-
-from selenium.webdriver import DesiredCapabilities
+# selenium，2022/9/17 將套件更新到4.4.3版本，因此寫法全部都更新過
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 from random import randint
 import pandas as pd
 thing = '花襯衫'
 
-# 設定基本參數
-desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
-#此處必須換成自己電腦的User-Agent
-desired_capabilities['phantomjs.page.customHeaders.User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-
-# PhantomJS driver 路徑
-driver = webdriver.PhantomJS(executable_path = 'phantomjs', desired_capabilities=desired_capabilities)
+# 自動下載ChromeDriver
+service = ChromeService(executable_path=ChromeDriverManager().install())
 
 # 關閉通知提醒
 chrome_options = webdriver.ChromeOptions()
@@ -31,14 +28,15 @@ prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs",prefs)
 
 # 開啟瀏覽器
-driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
+driver = webdriver.Chrome(service=service, chrome_options=chrome_options)
+time.sleep(5)
 
 theurl = []
 for i in range(5):
     # 去到你想要的網頁
     driver.get("https://www.amazon.com/s?k="+ thing +"&page="+ str(i) +"ref=sr_pg_2")
     
-    geturl = driver.find_elements_by_xpath('//h2/a')
+    geturl = driver.find_elements(by=By.XPATH, value='//h2/a')
 
     for j in geturl:
         theurl.append(j.get_attribute('href'))
@@ -72,19 +70,19 @@ for page in range(0,len(theurl)):
     time.sleep(randint( 7, 15))
     
     # 品牌名稱
-    if len(driver.find_elements_by_id('bylineInfo')) == 0 :
+    if len(driver.find_elements(by=By.ID, value='bylineInfo')) == 0 :
         brand.append('沒有牌子')
     else:
-        brand.append(driver.find_element_by_id('bylineInfo').text)
+        brand.append(driver.find_element(by=By.ID, value='bylineInfo').text)
     
     # 商品名稱
-    title.append(driver.find_element_by_id('title').text) 
+    title.append(driver.find_element(by=By.ID, value='title').text) 
     
     # 商品定價
-    if len(driver.find_elements_by_id('corePriceDisplay_desktop_feature_div'))==0:
-        getprice = driver.find_element_by_id('corePrice_desktop').text
+    if len(driver.find_elements(by=By.ID, value='corePriceDisplay_desktop_feature_div'))==0:
+        getprice = driver.find_element(by=By.ID, value='corePrice_desktop').text
     else:
-        getprice = driver.find_element_by_id('corePriceDisplay_desktop_feature_div').text
+        getprice = driver.find_element(by=By.ID, value='corePriceDisplay_desktop_feature_div').text
     
     getprice = getprice.replace('US$','') # 先把「US$」拿掉
     if '有了交易' in getprice:
@@ -106,21 +104,21 @@ for page in range(0,len(theurl)):
     
     
     # 星星評分
-    if len(driver.find_elements_by_id('acrPopover'))==0:
+    if len(driver.find_elements(by=By.ID, value='acrPopover'))==0:
         star.append('沒有星等')
     else:
-        star.append(driver.find_element_by_id('acrPopover').get_attribute("title").replace(' 顆星，最高 5 顆星',''))
+        star.append(driver.find_element(by=By.ID, value='acrPopover').get_attribute("title").replace(' 顆星，最高 5 顆星',''))
     # 全球評分數量
-    if len(driver.find_elements_by_id('acrCustomerReviewText'))==0:
+    if len(driver.find_elements(by=By.ID, value='acrCustomerReviewText'))==0:
         starNum.append(0)
     else:
-        getglobalNum = driver.find_element_by_id('acrCustomerReviewText').text
+        getglobalNum = driver.find_element(by=By.ID, value='acrCustomerReviewText').text
         getglobalNum = getglobalNum.replace('等級','')
         getglobalNum = getglobalNum.replace(',','')
         starNum.append(getglobalNum)
     
     # 客戶回饋大小
-    if len(driver.find_elements_by_id('fitRecommendationsLinkRatingText')) == 0:
+    if len(driver.find_elements(by=By.ID, value='fitRecommendationsLinkRatingText')) == 0:
         toosmall.append(0)
         small.append(0)
         goodsize.append(0)
@@ -128,45 +126,45 @@ for page in range(0,len(theurl)):
         toobig.append(0)
     else:
         time.sleep(5)
-        driver.find_element_by_id('fitRecommendationsLinkRatingText').click()
+        driver.find_element(by=By.ID, value='fitRecommendationsLinkRatingText').click()
         time.sleep(5)
-        getrequest = driver.find_elements_by_xpath('//td[@class = "a-span1 a-nowrap"]')
+        getrequest = driver.find_elements(by=By.XPATH, value='//td[@class = "a-span1 a-nowrap"]')
         toosmall.append(getrequest[0].text)# 太小
         small.append(getrequest[1].text)# 有點小
         goodsize.append(getrequest[2].text)# 尺寸正確
         big.append(getrequest[3].text)# 有點大
         toobig.append(getrequest[4].text)# 太大
         # 關閉選項
-        if len(driver.find_elements_by_xpath('//button[@data-action = "a-popover-close"]')) != 0:
-            driver.find_element_by_xpath('//button[@data-action = "a-popover-close"]').click()
+        if len(driver.find_elements(by=By.XPATH, value='//button[@data-action = "a-popover-close"]')) != 0:
+            driver.find_element(by=By.XPATH, value='//button[@data-action = "a-popover-close"]').click()
         time.sleep(5)
     
     # 大小選項
-    driver.find_element_by_xpath('//span[@data-csa-interaction-events = "click"]').click()
+    driver.find_element(by=By.XPATH, value='//span[@data-csa-interaction-events = "click"]').click()
     time.sleep(5)
     containar = []
-    for i in driver.find_elements_by_xpath('//li[contains(@id, "size_name_")]'):
+    for i in driver.find_elements(by=By.XPATH, value='//li[contains(@id, "size_name_")]'):
         if i.text != '選擇' and i.text != '':
             containar.append(i.text)
     size_options.append(containar)
     
     # 顏色選項
     containar = []
-    for i in driver.find_elements_by_xpath('//li[contains(@id, "color_name_")]'):
+    for i in driver.find_elements(by=By.XPATH, value='//li[contains(@id, "color_name_")]'):
         getdata = i.get_attribute("title")
         containar.append(getdata.replace('請按下選擇 ','')) # 取代掉「請按下選擇」
     color_options.append(containar)
     
     # 商品描述
-    if len(driver.find_elements_by_id('productDescription')) != 0:
-        productDscrp.append(driver.find_element_by_id('productDescription').text)
+    if len(driver.find_elements(by=By.ID, value='productDescription')) != 0:
+        productDscrp.append(driver.find_element(by=By.ID, value='productDescription').text)
     else:
         productDscrp.append('')
     
     # 產品詳細資訊
-    description.append(driver.find_element_by_id('detailBullets_feature_div').text)
+    description.append(driver.find_element(by=By.ID, value='detailBullets_feature_div').text)
     # 全球排名
-    getdata = driver.find_element_by_xpath('//div[@id = "detailBulletsWrapper_feature_div"]/ul').text
+    getdata = driver.find_element(by=By.XPATH, value='//div[@id = "detailBulletsWrapper_feature_div"]/ul').text
     getdata = getdata.replace('暢銷商品排名: ','')
     # getdata = getdata.replace('\n','')
     getdata = getdata.split('#')
@@ -180,10 +178,10 @@ for page in range(0,len(theurl)):
     global_range.append(containar)
     
     # 留言網址
-    if len(driver.find_elements_by_xpath('//a[@data-hook = "see-all-reviews-link-foot"]'))== 0 :
+    if len(driver.find_elements(by=By.XPATH, value='//a[@data-hook = "see-all-reviews-link-foot"]'))== 0 :
         view_url.append('沒有留言')
     else:
-        view_url.append(driver.find_element_by_xpath('//a[@data-hook = "see-all-reviews-link-foot"]').get_attribute('href'))
+        view_url.append(driver.find_element(by=By.XPATH, value='//a[@data-hook = "see-all-reviews-link-foot"]').get_attribute('href'))
     
     dic = {
            '品牌名稱' : brand,
