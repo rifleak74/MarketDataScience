@@ -7,7 +7,7 @@ Created on Wed Jun  2 21:16:35 2021
 
 Line Bot聊天機器人
 第三章 互動回傳功能
-推播push_message與回覆reply_message
+傳送貼圖StickerSendMessage
 """
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
