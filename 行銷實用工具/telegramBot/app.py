@@ -1,7 +1,8 @@
 import os
 import telegram
 from flask import Flask, request
-from telegram.ext import Dispatcher, MessageHandler, Filters
+from telegram.ext import Dispatcher, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Bot, Update, KeyboardButton, ReplyKeyboardMarkup
 
 # Initial Flask app
 app = Flask(__name__)
@@ -21,10 +22,11 @@ def webhook_handler():
     return 'ok'
 
 
-def reply_handler(bot, update):
+def reply_handler(update: Update, _: CallbackContext):
     """自動回復"""
-    text = update.message.text
-    update.message.reply_text(text)
+    user = update.message.from_user
+    userText = update.message.text
+    update.message.reply_text(userText)
 
 # New a dispatcher for bot
 dispatcher = Dispatcher(bot, None)
