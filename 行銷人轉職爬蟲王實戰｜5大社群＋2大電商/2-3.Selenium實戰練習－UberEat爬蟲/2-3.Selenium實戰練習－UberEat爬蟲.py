@@ -52,21 +52,21 @@ for i in driver.find_elements(by=By.TAG_NAME, value='section'):
         print(j.text + '\n')
 
 
-
+len(driver.find_elements(by=By.XPATH, value='//section/div[2]/div[1]/li'))
+# selenium，2022/11/06 ubereat網頁有更新，因此有些調整
 #方法2：利用剝洋蔥方式
-location = '//section/div[2]/div[1]/li['
-for i in range(1, 4): # 只先 show 出3個看看
-    print(driver.find_element(by=By.XPATH, value=location + str(i) + ']/div/a/h3').text)
+location = '//section/div[2]/div[1]/li'
+getAllShop = driver.find_elements(by=By.XPATH, value=location) # 先抓到大類別
+for i in range(0, 4): # 只先 show 出3個店家名稱看看
+    print(getAllShop[i].find_element(by=By.TAG_NAME, value='h3').text)
 
-doit = True
-i = 1
-while doit:
+# 整頁的店家名稱都吐出來
+for i in getAllShop:
     try:
-        print(driver.find_element(by=By.XPATH, value=location + str(i) + ']/div/a/h3').text)
+        print(i.find_element(by=By.TAG_NAME, value='h3').text)
     except:
-        doit = False
-        print(i)
-    i = i + 1
+        print('這不是店家') # 可能會抓到網頁的廣告，因此需要跳過
+
 
 
 
@@ -75,19 +75,24 @@ restaurant = []
 restaurantURL = []
 deliveryCost = []
 spendTime = []
-location = '//section/div[2]/div[1]/li['
-doit = True
-i = 1
-while doit:
-    try:
-        restaurant.append(driver.find_element(by=By.XPATH, value=location + str(i) + ']/div/a/h3').text)
-        restaurantURL.append(driver.find_element(by=By.XPATH, value=location + str(i) + ']/div/a').get_attribute('href'))
-        deliveryCost.append(driver.find_element(by=By.XPATH, value=location + str(i) +']/div/div/div/div[2]/div[2]/div[2]').text)
-        spendTime.append(driver.find_element(by=By.XPATH, value=location + str(i) +']/div/div/div/div[2]/div[2]/div[2]').text)
-    except:
-        doit = False
-    print(i)
-    i = i + 1
+location = '//section/div[2]/div[1]/li'
+getAllShop = driver.find_elements(by=By.XPATH, value=location) # 先抓到大類別
+for i in getAllShop:
+    # 先嘗試取得該標籤的陣列
+    get_restaurant = i.find_elements(by=By.TAG_NAME, value='h3')
+    get_restaurantURL = i.find_elements(by=By.TAG_NAME, value='a')
+    get_deliveryCost = i.find_elements(by=By.XPATH, value='div/div/div/div[2]/div[2]/div[2]')
+    get_spendTime = i.find_elements(by=By.XPATH, value='div/div/div/div[2]/div[2]/div[3]')
+
+    # 檢查是否有抓到資料，有可能有些沒抓到，譬如有店家沒有顯示外送價格，這會導致等等打包csv檔案時出錯
+    if len(get_restaurant)>0 and len(get_restaurantURL)>0 and len(get_deliveryCost)>0 and len(get_spendTime)>0 :
+        restaurant.append(get_restaurant[0].text)
+        restaurantURL.append(get_restaurantURL[0].get_attribute('href'))
+        deliveryCost.append(get_deliveryCost[0].text)
+        spendTime.append(get_spendTime[0].text)
+    else:
+        print('這不是店家，或資料有缺少') # 可能會抓到網頁的廣告，或者沒有運送價格、時間等等
+    
 
 # 打包成CSV檔案
 dfData = pd.DataFrame({
