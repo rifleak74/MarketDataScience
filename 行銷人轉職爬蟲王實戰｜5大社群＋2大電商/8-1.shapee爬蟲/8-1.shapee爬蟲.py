@@ -22,23 +22,28 @@ import random
 keyword = '花襯衫'
 page = 10
 ecode = 'utf-8-sig'
+
+# 2022/11/21 由於蝦皮API更新，加上了不少認證機制，因此在爬蟲之前，請先將header換成自己的
 my_headers = {
-    'accept': '*/*',
-    'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-    'cookie': '__LOCALE__null=TW; SPC_T_ID=wxv+iSLj3O7H6qDOQhZiKAuNxFL3vCIzSNxPKjyp/e3aZkOyOpXUx36SHoJElA90C3p7uOlJ+TBB3Ec0C9CKh3JR6cSyqr2sA0D6bae/+ChxDOtnsqCGB9rZNANBtHsYUbMMuDUc5wDyh0fS1tPw8F3riR7+kTzgYmFs0FOwQzg=; SPC_T_IV=R3RvOFZPUXk0MEU5UEwzRQ==; SPC_F=06HnjeBKD6QfQaxu2WzZe0oWe46Q6le8; REC_T_ID=1c06438a-364c-11ed-b2f3-ee7c6594edb5; csrftoken=iIITffWMfgRQP8g0FHTBLJ2r4Ko1Otw6; _gcl_au=1.1.1251735121.1663393609; SPC_IA=-1; SPC_EC=-; SPC_T_ID="wxv+iSLj3O7H6qDOQhZiKAuNxFL3vCIzSNxPKjyp/e3aZkOyOpXUx36SHoJElA90C3p7uOlJ+TBB3Ec0C9CKh3JR6cSyqr2sA0D6bae/+ChxDOtnsqCGB9rZNANBtHsYUbMMuDUc5wDyh0fS1tPw8F3riR7+kTzgYmFs0FOwQzg="; SPC_U=-; SPC_T_IV="R3RvOFZPUXk0MEU5UEwzRQ=="; SPC_SI=WpwhYwAAAABvVTNObFBDMJ22HAAAAAAAOEFWSThOaVQ=; SPC_R_T_ID=wxv+iSLj3O7H6qDOQhZiKAuNxFL3vCIzSNxPKjyp/e3aZkOyOpXUx36SHoJElA90C3p7uOlJ+TBB3Ec0C9CKh3JR6cSyqr2sA0D6bae/+ChxDOtnsqCGB9rZNANBtHsYUbMMuDUc5wDyh0fS1tPw8F3riR7+kTzgYmFs0FOwQzg=; SPC_R_T_IV=R3RvOFZPUXk0MEU5UEwzRQ==; _fbp=fb.1.1663393614946.166652952; _QPWSDCXHZQA=58608429-1742-4d4b-b700-1610287752ea; AMP_TOKEN=%24NOT_FOUND; _gid=GA1.2.900060094.1663393617; _ga=GA1.1.1772813716.1663393612; shopee_webUnique_ccd=ZLvsf7u90HavJpxcPjL1MA%3D%3D%7CQcr1Rvv7VsFJ7%2FBK9LzI9kg79UDWk6hFShOyEvvca2mBD900Mr3ck1TCP6RzCXel622tEqXT7%2F1%2FZGmH9kyAbaHYSCHiVmGouQ%3D%3D%7CpPquNK0ZO5EnPU1J%7C06%7C3; ds=c635d5e472189f9285afa538288e5acb; cto_bundle=XQYXsF80c2hvSDRIMElWRXd3ejVKY3hIanZSTXVQRlZIR0VCYXdMb0QlMkJMWmE2Tm5NbTBGWFpQdjFMNmszMHY5dW1QMkltdERWJTJGWlJNMVljRklrTURLb0tWNGFZYktSWUV5YUdMTThKT2dSemtlWTgxd3JuN0h2MngxTVAwVDklMkJGT2tzWlZ4YmlUdFU0Unc5Y3FIamo5OGJ1TEElM0QlM0Q; _ga_RPSBE3TQZZ=GS1.1.1663393612.1.1.1663395067.60.0.0',
-    'if-none-match-': '55b03-9e2557dfd0e772de9f277b50d1165cc2',
-    'referer': 'https://shopee.tw/%E8%8A%B1%E8%A5%AF%E8%A1%AB-50%E6%AC%BE%E5%8F%AF%E9%81%B8-%E9%96%8B%E8%A1%AB-%E8%A5%AF%E8%A1%AB-%E7%94%B7%E7%94%9F%E5%A4%8F%E5%A8%81%E5%A4%B7%E7%9F%AD%E8%A2%96%E8%A5%AF%E8%A1%AB-%E5%BA%A6%E5%81%87%E9%A2%A8%E8%A5%AF%E8%A1%AB-%E7%9F%AD%E8%A2%96%E8%A5%AF%E8%A1%AB-%E4%BA%94%E5%88%86%E8%A2%96%E8%A5%AF%E8%A1%AB-%E7%94%B7%E7%94%9F%E4%B8%8A%E8%A1%A3-%E5%AF%AC%E9%AC%86%E8%8A%B1%E8%A5%AF%E8%A1%AB-%E8%A5%AF%E8%A1%AB-%E6%BC%94%E5%87%BA%E6%9C%8D-i.5695643.16302986550?sp_atk=8d962fa5-d6ce-48ee-b150-79d3d469d3e2&xptdk=8d962fa5-d6ce-48ee-b150-79d3d469d3e2',
-    'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-origin',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-    'x-api-source': 'pc',
-    'x-requested-with': 'XMLHttpRequest',
-    'x-shopee-language': 'zh-Hant'
+    'accept': 'application/json',
+'accept-encoding': 'gzip, deflate, br',
+'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+'af-ac-enc-dat': 'AAcyLjQuMS0zAAABhKHhedEAAAtaAk4AAAAAAAAAAAvjwIqTsIlqbAt1di/KUNkkDfbrGH0dFr4BNqSRFEryKlpQoLPyGTqmXqL5F/8SvcTp8K6TCnpSZk1H9ceC295JHXrjVKy54uYqF/6KFSsRJsilt8Bl4VIIFFyt8ulG8UJIxlZGjuvBxpCGq/7Ekqct2WHRhYqwgcI+TgqizPqXvcUXZVbatanxNH0gKodDr23p0E7FOEJgWHqhRCLDJkB0UgDz+xhpe28iS3zrEtxrnqOCipnpmbrVxCJ6Cg53vZNG5GgQ+HsLteH6eVU3KBRO6TUWVKy54uYqF/6KFSsRJsilt/DWXQ/ZsonAkSLw3BL0KigMODMAZRB5xF24FfGUuTRRL5hL53sDq8dM1mFhQyMOoC2I+h6ztg/SjtkCe2K567gSHQ7iuYowyMydx8exDaeCF+8hpeeDkMDl0WXkPHJxWR0ankyqY5ve5FWxWem2DQKRY7OMsPKRljZ2EI7Zp6aWkWOzjLDykZY2dhCO2aemlu6SQ5byQJi4sOtAYkOvWutmD1Ju5IMO/YH/7c70+qrpF+8hpeeDkMDl0WXkPHJxWRhIsbkcqJR6nS23b0O/1wgobW0+BI9V4CXqmdYH0r6N+5mfYG1KcJ74vyUyUxtl8HThxt8jVqlA/krRnxthvDZfXPbPIRpzxH49wF3Wr3bHWXmYr7/dXjod4whdsMTLghsXMtlet6Ih+KndfWkuB2iRY7OMsPKRljZ2EI7Zp6aWaqqMl5VUdXB6xw5O5xrlspKvcaK/fDy4KzZ4lWl+sI9QJ2vX7vXsIPRiLtp+87ve',
+'content-type': 'application/json',
+'cookie': '__LOCALE__null=TW; SPC_R_T_ID=+7UdyVmMrkVRqO7k8i2prG6AwhuJu337u9VLj5unTJDGtau+tTU8DOxnSHKT/ZvKqOgaeeyml/Cc3QuH+Gu6cdAerdRA5WBoPP2QBYPFd+KsG8NRQnD7utW1GGa6km/uodyV7uIXOXZSnsnnlRyVoEKzESkih0/0kv6frm+0PZ4=; SPC_R_T_IV=RWRHQ3dFaUpZZ3VLT2VBYg==; SPC_T_ID=+7UdyVmMrkVRqO7k8i2prG6AwhuJu337u9VLj5unTJDGtau+tTU8DOxnSHKT/ZvKqOgaeeyml/Cc3QuH+Gu6cdAerdRA5WBoPP2QBYPFd+KsG8NRQnD7utW1GGa6km/uodyV7uIXOXZSnsnnlRyVoEKzESkih0/0kv6frm+0PZ4=; SPC_T_IV=RWRHQ3dFaUpZZ3VLT2VBYg==; SPC_SI=MLh0YwAAAABLYkUzV1o2MBrxjAAAAAAAYzB5Vnh1MkI=; SPC_F=dwcS7qZ6lde6REiKJH1yl8F4Wj71GWH5; REC_T_ID=6a52d349-6ac5-11ed-b583-b47af14a882c; csrftoken=3xxjtUDsRP2gv98Z62R3uQiT8XOm3E0p; _QPWSDCXHZQA=76295ff1-5367-4f7d-acf7-ffd877388871; _gcl_au=1.1.1924617676.1669163167; AMP_TOKEN=%24NOT_FOUND; _gid=GA1.2.1680480979.1669163170; _fbp=fb.1.1669163170334.247136174; _ga=GA1.1.870225610.1669163168; shopee_webUnique_ccd=XIrBEty%2BNaCWfXlB5ZleKA%3D%3D%7CGEp2Na4rC%2B%2BCny4XlOrUt7maIwDZ8cwSzouWrz1as7qJmVKLUrDvQGcDPQKmHqjAUGFgE2rBpgMZz76iOvwyCNXGJK%2FWeZXuhrxr%7C2Rfhhu0BdUx6OmV0%7C06%7C3; ds=f61296f150d94957950d4280b76174e8; _ga_RPSBE3TQZZ=GS1.1.1669163167.1.1.1669163242.60.0.0; cto_bundle=1riUq19pTjNPTjZxZmlyckMwTkNWODByTWRhU3R5U0xNdXh5SmdKUUdJTUtoOGhaUVJEOVZQMktqWmhkQkJNQlZHdW92a3VHNU9WM1JSOUZhSFV6WjBsbEVKREZJQ0VPSmYlMkZyV0dYbG1PODFMb0VwOUtJZ3ZHaXZsQnNvQWJRa240MFZ2dlo1Y0FNVlR3WE84cDdHYXElMkZZZyUyRlElM0QlM0Q',
+'referer': 'https://shopee.tw/50%E6%AC%BE%E5%8F%AF%E9%81%B8-%E7%94%B7%E7%94%9F%E5%A4%8F%E5%AD%A3%E4%BC%91%E9%96%92-%E5%A4%8F%E5%A4%A9%E8%A1%A3%E6%9C%8D-%E8%A5%AF%E8%A1%A3-%E5%A4%8F%E5%A8%81%E5%A4%B7%E7%9F%AD%E8%A2%96%E8%A5%AF%E8%A1%AB-%E5%BA%A6%E5%81%87%E9%A2%A8%E8%A5%AF%E8%A1%AB-%E7%9F%AD%E8%A2%96%E8%A5%AF%E8%A1%AB-M-3XL-%E8%8A%B1%E8%A5%AF%E8%A1%AB-%E6%83%85%E4%BE%B6%E8%A5%AF%E8%A1%AB-%E4%BA%94%E5%88%86%E8%A2%96%E8%A5%AF%E8%A1%AB-i.718087400.18213582177?sp_atk=fb7fa29a-4f26-4817-8a18-a49769075a55&xptdk=fb7fa29a-4f26-4817-8a18-a49769075a55',
+'sec-ch-ua': '"Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"',
+'sec-ch-ua-mobile': '?0',
+'sec-ch-ua-platform': '"Windows"',
+'sec-fetch-dest': 'empty',
+'sec-fetch-mode': 'cors',
+'sec-fetch-site': 'same-origin',
+'sz-token': 'XIrBEty+NaCWfXlB5ZleKA==|GEp2Na4rC++Cny4XlOrUt7maIwDZ8cwSzouWrz1as7qJmVKLUrDvQGcDPQKmHqjAUGFgE2rBpgMZz76iOvwyCNXGJK/WeZXuhrxr|2Rfhhu0BdUx6OmV0|06|3',
+'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+'x-api-source': 'pc',
+'x-csrftoken': '3xxjtUDsRP2gv98Z62R3uQiT8XOm3E0p',
+'x-requested-with': 'XMLHttpRequest',
+'x-shopee-language': 'zh-Hant'
       }     
 
 # 進入每個商品，抓取買家留言
