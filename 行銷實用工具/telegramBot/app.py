@@ -1,41 +1,49 @@
 import os
-import telegram
 from flask import Flask, request
-from telegram.ext import Dispatcher, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Bot, Update, KeyboardButton, ReplyKeyboardMarkup
+from telegram import Bot, Update
+from telegram.ext import Dispatcher, MessageHandler, Filters, CallbackContext
 
-# Initial Flask app
-app = Flask(__name__)
+# 初始化 Flask 應用
+app: Flask = Flask(__name__)
 
-# 設定你的token
-bot = telegram.Bot(token=('你的token'))
-bot.send_message(chat_id = '你的ID', text ='你可以開始了')
+# 設定你的 token
+bot: Bot = Bot(token='你的 token')
 
 @app.route('/hook', methods=['POST'])
-def webhook_handler():
-    """Set route /hook with POST method will trigger this method."""
-    if request.method == "POST":
-        update = telegram.Update.de_json(request.get_json(force=True), bot)
+def webhook_handler() -> str:
+    """
+    當路由 /hook 使用 POST 方法時，將觸發此方法。
 
-        # Update dispatcher process that handler to process this message
+    Returns:
+        str: 回傳 'ok' 字串
+    """
+    if request.method == "POST":
+        update: Update = Update.de_json(request.get_json(force=True), bot)
+
+        # 更新調度器處理程序以處理此訊息
         dispatcher.process_update(update)
     return 'ok'
 
 
-def reply_handler(update: Update, _: CallbackContext):
-    """自動回復"""
+def reply_handler(update: Update, _: CallbackContext) -> None:
+    """
+    回覆處理程序。
+
+    Args:
+        update (Update): 從使用者接收到的更新訊息
+        _ (CallbackContext): 回呼上下文，此處不使用，所以命名為 "_"
+    """
     user = update.message.from_user
-    userText = update.message.text
-    update.message.reply_text(userText)
+    user_text = update.message.text
+    update.message.reply_text(user_text)
 
-# New a dispatcher for bot
-dispatcher = Dispatcher(bot, None)
+# 為機器人新建一個調度器
+dispatcher: Dispatcher = Dispatcher(bot, None, use_context=True)
 
-# Add handler for handling message, there are many kinds of message. For this handler, it particular handle text
-# message.
+# 為調度器添加處理程序，處理各種類型的訊息。此處的處理程序專門處理文字訊息。
 dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
 
 if __name__ == "__main__":
-    # Running server
-    port = int(os.environ.get('PORT', 27017))
+    # 運行伺服器
+    port: int = int(os.environ.get('PORT', 27017))
     app.run(host='0.0.0.0', port=port)
